@@ -42,6 +42,7 @@
     "audio": "node scripts/generate-audio.mjs",
     "analyze": "node scripts/analyze-audio.mjs",
     "audit": "node scripts/audit-anti-ppt.mjs",
+    "gallery": "node scripts/generate-gallery.mjs",
     "sync": "node scripts/sync-plugin.mjs"
   },
   "optionalDependencies": {

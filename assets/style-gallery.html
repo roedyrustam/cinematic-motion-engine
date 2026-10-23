@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cinematic Motion Engine v2.1 — Official 12 Broadcast Style Directions Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=Space+Grotesk:wght@700&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #07090D;
+      color: #F4EFE6;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 40px 48px;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .gallery-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-bottom: 1px solid rgba(244, 239, 230, 0.14);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+
+    .kicker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: #D4FF33;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: #F4EFE6;
+    }
+
+    .header-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #94A3B8;
+      text-align: right;
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+
+    .style-card {
+      position: relative;
+      height: 290px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 22px;
+    }
+
+    .card-badge {
+      position: relative;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: 4px;
+      width: fit-content;
+      text-transform: uppercase;
+    }
+
+    .card-visual {
+      position: relative;
+      z-index: 2;
+      my: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+    }
+
+    .card-footer {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      border-top: 1px solid rgba(128, 128, 128, 0.22);
+      padding-top: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    .bg-decor {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Single-card fullbleed mode (?card=style-01) */
+    body.single-mode {
+      padding: 0;
+      margin: 0;
+      width: 960px;
+      height: 540px;
+      overflow: hidden;
+    }
+
+    body.single-mode .gallery-header {
+      display: none;
+    }
+
+    body.single-mode .grid {
+      display: block;
+      width: 960px;
+      height: 540px;
+    }
+
+    body.single-mode .style-card {
+      display: none;
+      width: 960px;
+      height: 540px;
+      border-radius: 0;
+      border: none;
+      padding: 44px 52px;
+    }
+
+    body.single-mode .style-card.active-single {
+      display: flex;
+    }
+
+    body.single-mode .card-badge {
+      font-size: 18px;
+      padding: 7px 16px;
+    }
+
+    body.single-mode .card-footer {
+      font-size: 18px;
+      padding-top: 18px;
+    }
+
+    body.single-mode .scale-hero {
+      transform: scale(1.75);
+      transform-origin: left center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="gallery-header">
+    <div>
+      <div class="kicker">CINEMATIC MOTION ENGINE v2.1 · ANTI-PPT VISUAL ARSENAL</div>
+      <h1>12 Broadcast Style Directions &amp; Spatial Signatures</h1>
+    </div>
+    <div class="header-meta">
+      <div>#world CONTINUOUS RIG · 1080p / 9:16 @ 60FPS</div>
+      <div>DETERMINISTIC D(t) · DIRECTIONAL SVG BLUR · J() RIG</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <!-- 01: Kinetic Swiss Grid -->
+    <div class="style-card" id="style-01-swiss-grid" style="background:#F4EFE6; color:#0B0D12;">
+      <div class="bg-decor"
+        style="background-image:linear-gradient(to right,rgba(11,13,18,0.1) 1px,transparent 1px),linear-gradient(to bottom,rgba(11,13,18,0.1) 1px,transparent 1px);background-size:48px 48px;">
+      </div>
+      <div class="card-badge" style="background:#FF3B1D; color:#FFFFFF;">01 · swiss-grid</div>
+      <div class="card-visual">
+        <div class="scale-hero">
+          <div style="font-family:'Syne',sans-serif;font-size:56px;font-weight:800;line-height:0.9;letter-spacing:-0.04em;">
+            99.98%</div>
+          <div
+            style="font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;color:#FF3B1D;margin-top:6px;">
+            [HAIRLINE SWISS PRECISION]</div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#0B0D12;">
+        <span>Kinetic Swiss Grid</span>
+        <span>#F4EFE6 · #FF3B1D</span>
+      </div>
+    </div>
+
+    <!-- 02: Tactile Paper Collage -->
+    <div class="style-card" id="style-02-kartun-kolase" style="background:#EAE2D3; color:#141413;">
+      <div class="bg-decor"
+        style="background-image:radial-gradient(rgba(20,20,19,0.18) 1.5px, transparent 1.5px);background-size:20px 20px;">
+      </div>
+      <div class="card-badge" style="background:#141413; color:#F2ECE1;">02 · kartun-kolase</div>
+      <div class="card-visual">
+        <div class="scale-hero"
+          style="background:#FFFFFF;border:4px solid #FFF;outline:2px solid #141413;box-shadow:8px 9px 0 #141413;padding:10px 16px;width:fit-content;transform:rotate(-2.5deg);">
+          <div style="font-family:'Fraunces',serif;font-size:32px;font-weight:800;line-height:0.95;">CUTOUT<br /><span
+              style="background:#FFDF38;padding:0 4px;">COLLAGE</span></div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#141413;">
+        <span>Tactile Paper Cutout</span>
+        <span>steps(4) · Drop Rim</span>
+      </div>
+    </div>
+
+    <!-- 03: Visual Journalism / Vox Documentary -->
+    <div class="style-card" id="style-03-jurnalisme-visual" style="background:#F4EFE6; color:#111318;">
+      <svg class="bg-decor" viewBox="0 0 400 290">
+        <path d="M 30 220 Q 190 90 360 160" fill="none" stroke="#D92B2B" stroke-width="3" stroke-dasharray="6 4" />
+        <circle cx="30" cy="220" r="6" fill="#D92B2B" />
+        <circle cx="360" cy="160" r="6" fill="#D92B2B" />
+      </svg>
+      <div class="card-badge" style="background:#D92B2B; color:#FFFFFF;">03 · jurnalisme-visual</div>
+      <div class="card-visual">
+        <div class="scale-hero">
+          <div style="font-family:'Instrument Serif',serif;font-size:44px;line-height:0.95;">Archival Evidence</div>
+          <div
+            style="background:#FFE14D;display:inline-block;padding:2px 8px;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;">
+            HIGHLIGHTER MULTIPLY</div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#111318;">
+        <span>Vox Documentary</span>
+        <span>#F4EFE6 · #FFE14D</span>
+      </div>
+    </div>
+
+    <!-- 04: Clean White Product Catalog -->
+    <div class="style-card" id="style-04-katalog-putih" style="background:#F8F9FA; color:#0F141C;">
+      <div class="bg-decor"
+        style="background-image:linear-gradient(to right,rgba(15,20,28,0.06) 1px,transparent 1px),linear-gradient(to bottom,rgba(15,20,28,0.06) 1px,transparent 1px);background-size:40px 40px;">
+      </div>
+      <div class="card-badge" style="background:#1D4ED8; color:#FFFFFF;">04 · katalog-putih</div>
+      <div class="card-visual">
+        <div class="scale-hero" style="display:flex;align-items:center;gap:16px;">
+          <div
+            style="background:#FFF;border:1.5px solid #0F141C;border-radius:8px;padding:10px 14px;box-shadow:-8px 12px 20px rgba(15,20,28,0.1);">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:#FF4F18;font-weight:700;">L3 ·
+              ISOMETRIC</div>
+            <div style="font-size:26px;font-weight:800;color:#0F141C;">0.42ms</div>
+          </div>
+          <div>
+            <div style="font-size:26px;font-weight:800;line-height:1;">STUDIO<br />CATALOG</div>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#475569;">
+        <span>Clean White Cyclorama</span>
+        <span>#F8F9FA · Exploded 3D</span>
+      </div>
+    </div>
+
+    <!-- 05: Vintage Blueprint & Sketch -->
+    <div class="style-card" id="style-05-sketsa-vintage" style="background:#0D2238; color:#F4EFE6;">
+      <svg class="bg-decor" viewBox="0 0 400 290">
+        <circle cx="300" cy="145" r="85" fill="none" stroke="rgba(56,189,248,0.35)" stroke-width="1.5"
+          stroke-dasharray="6 4" />
+        <polygon points="300,75 360,180 240,180" fill="none" stroke="#F4EFE6" stroke-width="2" />
+      </svg>
+      <div class="card-badge" style="background:#38BDF8; color:#081524;">05 · sketsa-vintage</div>
+      <div class="card-visual">
+        <div class="scale-hero">
+          <div style="font-family:'Instrument Serif',serif;font-size:42px;line-height:0.95;">Cyanotype<br />Schematic
+          </div>
+          <div style="font-family:'Caveat',cursive;font-size:22px;color:#FBBF24;margin-top:4px;">↳ Live
+            stroke-dashoffset!</div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#38BDF8;">
+        <span>Blueprint &amp; Ink Sketch</span>
+        <span>#0D2238 · #FBBF24</span>
+      </div>
+    </div>
+
+    <!-- 06: Living Cartoon Stage -->
+    <div class="style-card" id="style-06-kartun-panggung"
+      style="background:linear-gradient(180deg,#FFE5B4 0%,#8ECAE6 70%,#52B788 70%); color:#1D3557;">
+      <svg class="bg-decor" viewBox="0 0 400 290">
+        <circle cx="330" cy="65" r="28" fill="#FFB703" />
+        <ellipse cx="110" cy="60" rx="38" ry="14" fill="#FFF" opacity="0.9" />
+        <!-- Simple Articulated Character Icon -->
+        <g transform="translate(275, 165)">
+          <rect x="-16" y="-20" width="32" height="44" rx="8" fill="#E63946" stroke="#1D3557" stroke-width="2.5" />
+          <circle cx="0" cy="-38" r="16" fill="#F4A261" stroke="#1D3557" stroke-width="2.5" />
+        </g>
+      </svg>
+      <div class="card-badge" style="background:#1D3557; color:#FFE5B4;">06 · kartun-panggung</div>
+      <div class="card-visual">
+        <div class="scale-hero"
+          style="background:#FFF;border:2.5px solid #1D3557;border-radius:6px;padding:8px 12px;width:fit-content;">
+          <div style="font-size:22px;font-weight:800;color:#1D3557;">LIVING 2D STAGE</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#E63946;font-weight:700;">J(el,tx,ty)
+            · 10+ PROPS</div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#FFFFFF; border-color:rgba(255,255,255,0.35);">
+        <span>Articulated SVG Stage</span>
+        <span>Zero Text Captions</span>
+      </div>
+    </div>
+
+    <!-- 07: Bauhaus Geometric Constructivism -->
+    <div class="style-card" id="style-07-bauhaus-geo" style="background:#F3EAD8; color:#121316;">
+      <svg class="bg-decor" viewBox="0 0 400 290">
+        <path d="M 250 40 A 95 95 0 0 1 345 135 L 250 135 Z" fill="#E63926" />
+        <circle cx="315" cy="195" r="42" fill="#1D4ED8" />
+        <rect x="235" y="150" width="55" height="55" fill="#F59E0B" />
+      </svg>
+      <div class="card-badge" style="background:#121316; color:#F3EAD8;">07 · bauhaus-geo</div>
+      <div class="card-visual">
+        <div class="scale-hero">
+          <div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:0.94;letter-spacing:-0.03em;">
+            GEOMETRIC<br />CONSTRUCT</div>
+          <div
+            style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#E63926;margin-top:6px;">
+            ROTATING SEMICIRCLE RIGS</div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#121316;">
+        <span>Bauhaus Constructivism</span>
+        <span>#E63926 · #1D4ED8 · #F59E0B</span>
+      </div>
+    </div>
+
+    <!-- 08: Neo-Brutalist Terminal & Telemetry -->
+    <div class="style-card" id="style-08-brutalist-telemetry" style="background:#090B0E; color:#D4FF33;">
+      <svg class="bg-decor" viewBox="0 0 400 290">
+        <polyline points="0,180 70,180 95,110 120,220 145,140 170,180 400,180" fill="none" stroke="rgba(212,255,51,0.28)"
+          stroke-width="2.5" />
+      </svg>
+      <div class="card-badge" style="background:#D4FF33; color:#090B0E;">08 · brutalist-telemetry</div>
+      <div class="card-visual">
+        <div class="scale-hero">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:800;line-height:1;">
+            0x7F_TELEMETRY</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:13px;color:#FF5500;margin-top:6px;">[SYS_LOAD:
+            98.4% · LOCKED]</div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#94A3B8;">
+        <span>Brutalist Terminal</span>
+        <span>#090B0E · #D4FF33</span>
+      </div>
+    </div>
+
+    <!-- 09: Warm Editorial Serif & Luxury Film -->
+    <div class="style-card" id="style-09-editorial-film"
+      style="background:radial-gradient(circle at 85% 20%, rgba(255,90,40,0.42), #120E0C 70%); color:#F5ECE0;">
+      <div class="card-badge" style="background:rgba(245,236,224,0.16); color:#F5ECE0; border:1px solid rgba(245,236,224,0.3);">
+        09 · editorial-film</div>
+      <div class="card-visual">
+        <div class="scale-hero">
+          <div style="font-family:'Instrument Serif',serif;font-size:48px;font-style:italic;line-height:0.92;">Cinema
+            Halation</div>
+          <div
+            style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.12em;color:#FCA5A5;margin-top:8px;">
+            35MM GATE WEAVE &amp; DIPTYCH</div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#D6C7B2;">
+        <span>Luxury Editorial Film</span>
+        <span>#120E0C · Halation Glow</span>
+      </div>
+    </div>
+
+    <!-- 10: Isometric Spatial Blueprint -->
+    <div class="style-card" id="style-10-isometric-blueprint" style="background:#0B111E; color:#E2E8F0;">
+      <svg class="bg-decor" viewBox="0 0 400 290">
+        <g transform="translate(285, 145)" stroke="#38BDF8" stroke-width="1.8" fill="none">
+          <polygon points="0,-55 75,-18 0,20 -75,-18" fill="rgba(56,189,248,0.12)" />
+          <polygon points="0,0 75,37 0,75 -75,37" fill="rgba(99,102,241,0.15)" stroke="#818CF8" />
+        </g>
+      </svg>
+      <div class="card-badge" style="background:#38BDF8; color:#0B111E;">10 · isometric-blueprint</div>
+      <div class="card-visual">
+        <div class="scale-hero">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;line-height:0.95;">ISOMETRIC
+            <br /><span style="color:#38BDF8;">DATA RAILS</span></div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#94A3B8;">
+        <span>3D Extruded Pipeline</span>
+        <span>rotateX(60°) rotateZ(-45°)</span>
+      </div>
+    </div>
+
+    <!-- 11: Spatial Glass & Optical Refraction -->
+    <div class="style-card" id="style-11-spatial-optics"
+      style="background:linear-gradient(135deg,#0B0F19 0%,#1E1B4B 100%); color:#F8FAFC;">
+      <div class="bg-decor"
+        style="background:radial-gradient(circle at 75% 45%, rgba(56,189,248,0.28), transparent 55%);"></div>
+      <div class="card-badge"
+        style="background:rgba(255,255,255,0.12); color:#38BDF8; border:1px solid rgba(56,189,248,0.4);">11 ·
+        spatial-optics</div>
+      <div class="card-visual">
+        <div class="scale-hero"
+          style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.28);border-radius:12px;padding:12px 18px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.4);width:fit-content;">
+          <div style="font-size:28px;font-weight:800;letter-spacing:-0.02em;">OPTICAL DEPTH</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#38BDF8;margin-top:4px;">SPECULAR RIM
+            · RACK FOCUS</div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#94A3B8;">
+        <span>Spatial Glass Refraction</span>
+        <span>2026 Multi-Plane DOF</span>
+      </div>
+    </div>
+
+    <!-- 12: Kinetic Data Sculpture -->
+    <div class="style-card" id="style-12-data-sculpture" style="background:#0E1015; color:#F4EFE6;">
+      <svg class="bg-decor" viewBox="0 0 400 290">
+        <rect x="235" y="135" width="24" height="95" fill="#FF3B1D" rx="3" />
+        <rect x="270" y="95" width="24" height="135" fill="#D4FF33" rx="3" />
+        <rect x="305" y="55" width="24" height="175" fill="#38BDF8" rx="3" />
+        <rect x="340" y="115" width="24" height="115" fill="#A855F7" rx="3" />
+      </svg>
+      <div class="card-badge" style="background:#A855F7; color:#FFFFFF;">12 · data-sculpture</div>
+      <div class="card-visual">
+        <div class="scale-hero">
+          <div style="font-family:'Syne',sans-serif;font-size:40px;font-weight:800;line-height:0.92;">4.8M<br /><span
+              style="color:#D4FF33;font-size:26px;">MONOLITH BARS</span></div>
+        </div>
+      </div>
+      <div class="card-footer" style="color:#94A3B8;">
+        <span>Kinetic Data Sculpture</span>
+        <span>AUDIO_FRAMES FFT Driven</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const cardId = params.get('card');
+    if (cardId) {
+      document.body.classList.add('single-mode');
+      const target = document.getElementById(cardId);
+      if (target) target.classList.add('active-single');
+    }
+    window.GALLERY_READY = true;
+  </script>
+</body>
+
+</html>

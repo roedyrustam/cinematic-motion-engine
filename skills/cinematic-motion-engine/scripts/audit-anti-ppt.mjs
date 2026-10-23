@@ -96,7 +96,9 @@ function main() {
 
   if (fs.statSync(target).isDirectory()) {
     for (const entry of fs.readdirSync(target)) {
-      if (entry.endsWith('.html')) files.push(path.join(target, entry));
+      if (entry.endsWith('.html') && entry !== 'style-gallery.html') {
+        files.push(path.join(target, entry));
+      }
     }
   } else {
     files.push(target);
