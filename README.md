@@ -3,7 +3,7 @@
 > **Standalone Broadcast Programmatic Motion Graphics, Kinetic Typography, Living Cartoon Stage & 60fps Video Engine for AI Agents**
 > *(Antigravity · Claude Code · Cursor · OpenAI Codex · Gemini CLI)*
 
-[![Version](https://img.shields.io/badge/version-2.1.0-orange)](https://github.com/roedyrustam/cinematic-motion-engine/releases/tag/v2.1.0)
+[![Version](https://img.shields.io/badge/version-2.2.0-orange)](https://github.com/roedyrustam/cinematic-motion-engine/releases/tag/v2.2.0)
 [![Engine](https://img.shields.io/badge/Engine-GSAP_3.12_%2B_Three.js_%2B_FFmpeg-34D399)](https://github.com/roedyrustam/cinematic-motion-engine)
 [![Output](https://img.shields.io/badge/Output-1080p_%2F_9%3A16_%40_60fps_MP4_ProRes_WebM-F5B952)](https://github.com/roedyrustam/cinematic-motion-engine)
 
@@ -67,11 +67,13 @@
 
 ---
 
-### ✨ Key Features (v2.1 Upgrade)
+### ✨ Key Features (v2.2 Upgrade)
+- **Universal Broadcast Runtime SDK (`assets/cme-core.js` — `window.CME`)**: Shared deterministic runtime providing `mulberry32` PRNG, `createSpeedRampTable`, `sampleAudio`, 12 `THEMES` (`applyTheme`), `createCameraRig` (`into -> settle -> look -> home` with directional `#mb-world` motion blur), 8-mode kinetic typography (`text.splitWords`, `text.animateWords`, `text.slam`, `text.block`, `text.multiply`), and `J(el, tx, ty)` / `updateWalkCycle` SVG joint rigs.
 - **Zero Slide Decks (`#world` Continuous Spatial Rig)**: Unified `4720×3880` world canvas wrapping WebGL/Three.js (`<canvas id="gl">`), SVG isometric pipelines, and DOM typography in 1:1 spatial parallax.
 - **100% Frame-Deterministic**: Pure mathematical functions of `tl.time()`, `mulberry32` PRNG, and precomputed velocity integral `D(t)`. Zero `Math.random()` or `Date.now()` drift.
 - **Directional SVG Motion Blur**: Dynamic `<feGaussianBlur>` (`#mb-world`) attached during high-velocity whip-pans and detached immediately upon settling for razor-sharp typography.
 - **Autonomous CLI Audio, Anti-PPT Telemetry & 60fps Renderer**:
+  - `npm run scaffold` (`scripts/scaffold-video.mjs`): One-command project bootstrapper (`--type=opener|explainer|panggung|kolase|katalog|sketsa`, `--style=<id>`, `--mood`, `--bpm`, `--duration`, `--ratio`, `--out`) that copies the starter + `cme-core.js`, generates `audio.wav` + `audio-frames.js`, applies the broadcast theme, and verifies Anti-PPT compliance.
   - `npm run audio` (`scripts/generate-audio.mjs`): CLI procedural stereo WAV & 60fps `AUDIO_FRAMES` synthesizer (`--mood=warm|cyber|editorial|corporate`, `--bpm`, `--duration`, `--drops`).
   - `npm run analyze` (`scripts/analyze-audio.mjs`): Headless CLI voiceover silence (`SEG`/`PARA`) & 60fps FFT compiler for `.wav/.mp3/.m4a`.
   - `npm run snap` (`scripts/snap-contact-sheet.mjs`): Captures 12 beat keyframes, runs in-browser Anti-PPT DOM telemetry checks (`audit-report.json`), and stitches a labeled `contact-sheet.png`.
@@ -79,7 +81,7 @@
   - `npm run export` (`scripts/export-video.mjs`): Spawns dedicated browser workers or streams via `--pipe` (`image2pipe`) into FFmpeg (`--codec=h264|prores|webm-alpha`, `--ratio=16x9|9x16|1x1`).
   - `npm run gallery` (`scripts/generate-gallery.mjs`): Automated 19-image visual style gallery & starter keyframe generator.
   - `scripts/kepala-ekspresi.py`: Alpha-bounding-box aware 8-expression character head sprite generator + parametric `viseme-rig.svg`.
-  - `npm run sync` (`scripts/sync-plugin.mjs`): Deterministic SHA-256 synchronizer between root and `skills/cinematic-motion-engine/`.
+  - `npm run sync` / `npm run sync:global` (`scripts/sync-plugin.mjs`): Deterministic SHA-256 synchronizer across root, `skills/cinematic-motion-engine/`, and global AI skill/plugin installations.
 
 ### 🚀 Installation
 
@@ -102,7 +104,7 @@ git clone https://github.com/roedyrustam/cinematic-motion-engine.git .agents/ski
 <a name="bahasa-indonesia"></a>
 ## Bahasa Indonesia
 
-**Cinematic Motion Engine (v2.1)** adalah skill dan plugin AI mandiri (*standalone*) yang mengubah asisten coding AI menjadi **studio motion graphics kelas broadcast**. Menggantikan animasi ala slide PowerPoint dengan **8 Hukum Struktural Mekanis Anti-PPT**, rig kamera dunia kontinu `#world`, *motion blur* arah SVG `<feGaussianBlur>`, shader 3D *speed-ramp* deterministik `D(t)`, rig sendi karakter kartun SVG `J(el, tx, ty)`, galeri visual 12 gaya broadcast (`npm run gallery`), audit telemetri DOM & *contact-sheet* otomatis (`npm run snap`), serta perender paralel **MP4 / ProRes 4444 / WebM Alpha 60fps** (`npm run export`).
+**Cinematic Motion Engine (v2.2)** adalah skill dan plugin AI mandiri (*standalone*) yang mengubah asisten coding AI menjadi **studio motion graphics kelas broadcast**. Menggantikan animasi ala slide PowerPoint dengan **8 Hukum Struktural Mekanis Anti-PPT**, runtime broadcast universal `assets/cme-core.js` (`window.CME`), rig kamera dunia kontinu `#world`, *motion blur* arah SVG `<feGaussianBlur>`, shader 3D *speed-ramp* deterministik `D(t)`, rig sendi karakter kartun SVG `J(el, tx, ty)`, galeri visual 12 gaya broadcast (`npm run gallery`), *scaffolder* proyek satu perintah (`npm run scaffold`), audit telemetri DOM & *contact-sheet* otomatis (`npm run snap`), serta perender paralel **MP4 / ProRes 4444 / WebM Alpha 60fps** (`npm run export`).
 
 ### 📁 Struktur Direktori
 ```text
@@ -116,6 +118,7 @@ cinematic-motion-engine/
 ├── rules/
 │   └── AGENTS.md                             # Aturan aktivasi otomatis Anti-PPT
 ├── assets/
+│   ├── cme-core.js                           # Universal Broadcast Runtime SDK (window.CME)
 │   ├── style-gallery.html                    # Katalog Visual 12 Arah Gaya Broadcast
 │   ├── starter-opener.html                   # Starter Video Opener / Brand Reel (16:9, 9:16, 1:1)
 │   ├── starter-explainer.html                # Starter Explainer Aksi Kontinu
@@ -130,6 +133,7 @@ cinematic-motion-engine/
 │   ├── techniques-and-shaders.md             # Kamera #world, Blur SVG, & Shader D(t)
 │   └── kartun-panggung-and-ae-bridge.md      # Rig Sendi J() & Bridge After Effects MCP
 └── scripts/
+    ├── scaffold-video.mjs                    # Scaffolder Proyek Video 1-Perintah + Tema + Audio
     ├── generate-gallery.mjs                  # Generator Otomatis 19 Gambar Style Gallery & Starter
     ├── snap-contact-sheet.mjs                # Pemotret 12 Keyframe + Penyusun Contact Sheet + DOM Linter
     ├── audit-anti-ppt.mjs                    # Linter Statis & Struktural 8 Hukum Anti-PPT

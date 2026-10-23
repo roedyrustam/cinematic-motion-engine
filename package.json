@@ -1,6 +1,6 @@
 {
   "name": "cinematic-motion-engine",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Standalone Broadcast Programmatic Motion Graphics, Kinetic Typography, Living Cartoon Stage & 60fps Video Engine for AI Agents (Antigravity, Claude Code, Cursor, Codex)",
   "type": "module",
   "author": "Roedy Rustam",
@@ -37,13 +37,15 @@
     "node": ">=18.0.0"
   },
   "scripts": {
+    "scaffold": "node scripts/scaffold-video.mjs",
     "snap": "node scripts/snap-contact-sheet.mjs",
     "export": "node scripts/export-video.mjs",
     "audio": "node scripts/generate-audio.mjs",
     "analyze": "node scripts/analyze-audio.mjs",
-    "audit": "node scripts/audit-anti-ppt.mjs",
+    "audit": "node scripts/audit-anti-ppt.mjs assets --strict",
     "gallery": "node scripts/generate-gallery.mjs",
-    "sync": "node scripts/sync-plugin.mjs"
+    "sync": "node scripts/sync-plugin.mjs",
+    "sync:global": "node scripts/sync-plugin.mjs --global"
   },
   "optionalDependencies": {
     "puppeteer-core": "^24.0.0"

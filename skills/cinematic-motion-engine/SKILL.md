@@ -1,11 +1,11 @@
 ---
 name: cinematic-motion-engine
-description: "Sovereign programmatic motion graphics, kinetic typography, and broadcast video engine (Vibe Motion Pro v2.0). Masters 8 Anti-PPT Structural Laws, deterministic GSAP + Three.js/WebGPU camera rigs, directional SVG motion blur, 24 opener concepts, 6 explainer modes (aksi kontinu, kartun panggung, kolase, jurnalisme, katalog, sketsa), offline FFT audio-reactive curves, VO silence retiming, After Effects MCP bridge, and parallel FFmpeg/WebCodecs MP4 export / Mesin motion graphics programatik, tipografi kinetik, dan video broadcast berdaulat (Vibe Motion Pro v2.0) dengan 8 Hukum Anti-PPT, kamera dunia deterministik, blur arah SVG, kurva audio-reaktif FFT, dan ekspor MP4 60fps."
+description: "Sovereign programmatic motion graphics, kinetic typography, and broadcast video engine (Vibe Motion Pro v2.2). Masters 8 Anti-PPT Structural Laws, deterministic GSAP + Three.js/WebGPU camera rigs, directional SVG motion blur, 24 opener concepts, 6 explainer modes (aksi kontinu, kartun panggung, kolase, jurnalisme, katalog, sketsa), cme-core.js universal runtime, headless CLI FFT audio/VO compiler, Anti-PPT DOM telemetry gate, and parallel/pipe FFmpeg 60fps MP4/ProRes/WebM export / Mesin motion graphics programatik, tipografi kinetik, dan video broadcast berdaulat (Vibe Motion Pro v2.2) dengan 8 Hukum Anti-PPT, kamera dunia deterministik, blur arah SVG, kurva audio-reaktif FFT, dan ekspor MP4 60fps."
 author: "Roedy Rustam"
-version: "4.4.2"
+version: "4.5.0"
 ---
 
-# Cinematic Motion Engine & Broadcast Video Architect (Vibe Motion Pro v2.0)
+# Cinematic Motion Engine & Broadcast Video Architect (Vibe Motion Pro v2.2)
 
 [English](#english) | [Bahasa Indonesia](#bahasa-indonesia)
 
@@ -14,8 +14,11 @@ version: "4.4.2"
 <a name="english"></a>
 ## English
 
+## Orchestration & Integration
+Operates both as a **Standalone Broadcast Motion Studio Plugin** and in deep synergy with `svg-animation-motion-expert`, `web-3d-graphics-expert`, `glsl-shader-expert`, `app-promo-media-expert`, `design-system-architect`, `visual-ui-auditor`, and `anti-slop`.
+
 ### Standalone Architecture & Capabilities
-Self-contained, zero-dependency broadcast motion graphics studio engine (Bang Motion Pro v2.0). Operates independently outside `vibes-plug` across Antigravity, Claude Code, Cursor, and Codex to deliver programmatic motion graphics, product launch openers, animated explainers, cartoon stage animations, deterministic procedural audio (`scripts/generate-audio.mjs`), automated contact-sheet visual audits (`scripts/snap-contact-sheet.mjs`), and parallel 60fps MP4 video renders (`scripts/export-video.mjs`).
+Self-contained, zero-dependency broadcast motion graphics studio engine (Bang Motion Pro v2.2). Operates independently across Antigravity, Claude Code, Cursor, and Codex to deliver programmatic motion graphics, product launch openers, animated explainers, cartoon stage animations, one-command project scaffolding (`scripts/scaffold-video.mjs`), deterministic procedural audio (`scripts/generate-audio.mjs`), headless CLI voiceover & FFT extraction (`scripts/analyze-audio.mjs`), automated Anti-PPT DOM telemetry & contact-sheet visual audits (`scripts/snap-contact-sheet.mjs` & `scripts/audit-anti-ppt.mjs`), and parallel/pipe 60fps MP4/ProRes/WebM video renders (`scripts/export-video.mjs`).
 
 ---
 
@@ -348,12 +351,16 @@ Always read the specific reference file before implementing specialized modes:
 - `references/explainer-modes.md` — Deep guide for the **6 Explainer Modes** (`aksi kontinu`, `kartun kolase`, `jurnalisme visual`, `katalog putih`, `sketsa vintage`, `kartun panggung`), VO silence retiming (`SEG`/`PARA`), and Phrase Accretion (`slam`/`block`/`multiply`).
 - `references/techniques-and-shaders.md` — Camera shot-sizing math (`frameOn`, `camTo`), directional SVG motion blur, Three.js / WebGPU speed-ramped shaders (`D(t)`), deterministic `feTurbulence` grainy gradients, and timeline-locked `<video>` footage (`clip()`).
 - `references/kartun-panggung-and-ae-bridge.md` — Articulated SVG joint rigging (`J()`), 10+ moving stage props rule, local OpenCV/PIL head expression generator (`kepala-ekspresi.py`), After Effects MCP (`ae_*`) bridge scripts, and AI video loop plates (Higgsfield/Kling/Runway).
+- `assets/cme-core.js` — Universal deterministic runtime (`window.CME`) exporting `mulberry32`, `createSpeedRampTable`, `sampleAudio`, `THEMES` (12 Broadcast Style palettes), `applyTheme`, `createCameraRig`, `text.*` (8 entrances + phrase accretion), `J()`, and `updateWalkCycle`.
+- `assets/style-gallery.html` — Interactive & deterministic visual showcase of all **12 Broadcast Style Directions** (`?card=style-01-swiss-grid` .. `style-12-data-sculpture`).
 - `assets/starter-opener.html` — Production-ready 1920x1080 / 9:16 opener template with `#world` camera rig, Three.js `D(t)` shader canvas, directional blur pool, 8 text entrances, 5 exits, and `window.OPENER` contract.
 - `assets/starter-explainer.html` — Narrative explainer template with VO `SEG`/`PARA` synchronization, Phrase Accretion helpers (`slam`, `block`, `multiply`), and interactive UI camera tracking (`camTo`).
 - `assets/starter-explainer-panggung.html` — Living Cartoon Stage template with `J()` articulated character rigs, 3-depth parallax stage, walk cycle, blink/talk loop, and multi-stage camera cuts.
 - `assets/starter-explainer-kolase.html` — Tactile Paper Collage & Visual Journalism starter with paper cutout rims, `steps(4)` stop-motion jitter, highlighter sweeps, and evidence board strings.
 - `assets/starter-explainer-katalog.html` — Clean White Studio Catalog (`#F8F9FA`) starter with 3D Isometric Exploded-View layer stacks, millimeter calibration rings, and tabular benchmark cards.
 - `assets/starter-explainer-sketsa.html` — Vintage Cyanotype Blueprint & Ink Sketch starter with live SVG `stroke-dashoffset` schematic drawing, compass azimuth arcs, and handwritten callouts.
+- `scripts/scaffold-video.mjs` — One-command project scaffolder (`npm run scaffold -- <dir> --mode=opener --style=swiss-grid --duration=10 --mood=cyber`) that copies starter + `cme-core.js`, synthesizes `audio.wav` + `audio-frames.js`, and runs the Anti-PPT linter.
+- `scripts/generate-gallery.mjs` — Automated 19-image Puppeteer gallery & starter preview renderer (`npm run gallery` -> `docs/gallery/*.png`).
 - `scripts/snap-contact-sheet.mjs` — Deterministic Puppeteer keyframe screenshotter + automated HTML/PNG Contact Sheet generator + real-time Anti-PPT DOM Telemetry Auditor (`audit-report.json`).
 - `scripts/audit-anti-ppt.mjs` — Standalone static & structural Anti-PPT 8-Law auditor CLI (`npm run audit`).
 - `scripts/export-video.mjs` — Parallel multi-worker & zero-disk `--pipe` frame-accurate 60fps video exporter supporting `--codec=h264|prores|webm-alpha` and `--ratio=16x9|9x16|1x1`.
@@ -361,15 +368,18 @@ Always read the specific reference file before implementing specialized modes:
 - `scripts/analyze-audio.mjs` — Headless CLI Voiceover Silence (`SEG`/`PARA`) + 60fps FFT Audio-Reactive Envelope (`AUDIO_FRAMES`) compiler for `.wav/.mp3/.m4a` (`npm run analyze`).
 - `scripts/vo-fft-analyzer.html` — Browser-based offline Voiceover Silence (`SEG`/`PARA`) + 60fps FFT Audio-Reactive Envelope (`AUDIO_FRAMES`) compiler.
 - `scripts/kepala-ekspresi.py` — Alpha-bounding-box aware Python (Pillow) 8-expression sprite generator + parametric SVG `viseme-rig.svg` generator.
-- `scripts/sync-plugin.mjs` — Deterministic SHA-256 root-to-plugin synchronizer (`npm run sync`).
+- `scripts/sync-plugin.mjs` — Deterministic SHA-256 synchronizer across root, `skills/cinematic-motion-engine/`, and global plugin/skill installations (`npm run sync` / `npm run sync:global`).
 
 ---
 
 <a name="bahasa-indonesia"></a>
 ## Bahasa Indonesia
 
+## Integrasi Orkestrasi
+Beroperasi baik sebagai **Plugin Studio Motion Broadcast Mandiri (Standalone)** maupun bersinergi penuh dengan `svg-animation-motion-expert`, `web-3d-graphics-expert`, `glsl-shader-expert`, `app-promo-media-expert`, `design-system-architect`, `visual-ui-auditor`, dan `anti-slop`.
+
 ### Arsitektur Mandiri (Standalone) & Kapabilitas
-Mesin studio motion graphics programatik mandiri (Bang Motion Pro v2.0) yang bekerja secara independen di luar `vibes-plug`. Menghasilkan motion graphics kelas studio broadcast, video opener peluncuran produk, video explainer naratif, animasi kartun panggung, sintesis audio deterministik (`scripts/generate-audio.mjs`), audit lembar kontak visual (`scripts/snap-contact-sheet.mjs`), serta render video MP4 60fps yang 100% deterministik (`scripts/export-video.mjs`).
+Mesin studio motion graphics programatik mandiri (Bang Motion Pro v2.2) yang bekerja secara independen di seluruh platform AI. Menghasilkan motion graphics kelas studio broadcast, video opener peluncuran produk, video explainer naratif (6 mode), animasi kartun panggung, scaffolding proyek otomatis (`scripts/scaffold-video.mjs`), sintesis audio deterministik (`scripts/generate-audio.mjs`), ekstraksi jeda voiceover & FFT CLI (`scripts/analyze-audio.mjs`), audit lembar kontak & telemetri DOM Anti-PPT (`scripts/snap-contact-sheet.mjs` & `scripts/audit-anti-ppt.mjs`), serta render video MP4/ProRes/WebM 60fps yang 100% deterministik (`scripts/export-video.mjs`).
 
 ---
 
