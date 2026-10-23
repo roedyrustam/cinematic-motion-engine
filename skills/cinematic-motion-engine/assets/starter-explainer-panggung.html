@@ -296,11 +296,11 @@
 
     const tl = gsap.timeline({
       paused: isClean,
-      repeat: isClean ? 0 : -1,
-      onUpdate: () => {
-        updateLivingStage(tl.time());
-        applyStageCam();
-      }
+      repeat: isClean ? 0 : -1
+    });
+    tl.eventCallback('onUpdate', () => {
+      updateLivingStage(tl.time());
+      applyStageCam();
     });
 
     // Camera Cut 1: Medium Stage Shot (zoom 1.22 -> 1.32 following character walk)

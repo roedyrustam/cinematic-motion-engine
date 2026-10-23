@@ -414,14 +414,14 @@
     // 6. Master Deterministic GSAP Timeline
     const tl = gsap.timeline({
       paused: isClean,
-      repeat: isClean ? 0 : -1,
-      onUpdate: () => {
-        const t = tl.time();
-        render3D(t);
-        if (isDebug) {
-          document.getElementById('debug-scrub').value = t;
-          document.getElementById('debug-time').textContent = `${t.toFixed(2)}s / ${DURATION.toFixed(2)}s`;
-        }
+      repeat: isClean ? 0 : -1
+    });
+    tl.eventCallback('onUpdate', () => {
+      const t = tl.time();
+      render3D(t);
+      if (isDebug) {
+        document.getElementById('debug-scrub').value = t;
+        document.getElementById('debug-time').textContent = `${t.toFixed(2)}s / ${DURATION.toFixed(2)}s`;
       }
     });
 

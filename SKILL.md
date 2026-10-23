@@ -352,10 +352,16 @@ Always read the specific reference file before implementing specialized modes:
 - `assets/starter-explainer.html` — Narrative explainer template with VO `SEG`/`PARA` synchronization, Phrase Accretion helpers (`slam`, `block`, `multiply`), and interactive UI camera tracking (`camTo`).
 - `assets/starter-explainer-panggung.html` — Living Cartoon Stage template with `J()` articulated character rigs, 3-depth parallax stage, walk cycle, blink/talk loop, and multi-stage camera cuts.
 - `assets/starter-explainer-kolase.html` — Tactile Paper Collage & Visual Journalism starter with paper cutout rims, `steps(4)` stop-motion jitter, highlighter sweeps, and evidence board strings.
-- `scripts/snap-contact-sheet.mjs` — Deterministic Puppeteer keyframe screenshotter + automated HTML/PNG Contact Sheet generator.
-- `scripts/export-video.mjs` — Parallel multi-worker frame-accurate 60fps MP4 exporter with visually lossless FFmpeg grain preservation and audio muxing.
+- `assets/starter-explainer-katalog.html` — Clean White Studio Catalog (`#F8F9FA`) starter with 3D Isometric Exploded-View layer stacks, millimeter calibration rings, and tabular benchmark cards.
+- `assets/starter-explainer-sketsa.html` — Vintage Cyanotype Blueprint & Ink Sketch starter with live SVG `stroke-dashoffset` schematic drawing, compass azimuth arcs, and handwritten callouts.
+- `scripts/snap-contact-sheet.mjs` — Deterministic Puppeteer keyframe screenshotter + automated HTML/PNG Contact Sheet generator + real-time Anti-PPT DOM Telemetry Auditor (`audit-report.json`).
+- `scripts/audit-anti-ppt.mjs` — Standalone static & structural Anti-PPT 8-Law auditor CLI (`npm run audit`).
+- `scripts/export-video.mjs` — Parallel multi-worker & zero-disk `--pipe` frame-accurate 60fps video exporter supporting `--codec=h264|prores|webm-alpha` and `--ratio=16x9|9x16|1x1`.
+- `scripts/generate-audio.mjs` — CLI procedural stereo WAV & 60fps `AUDIO_FRAMES` synthesizer (`--mood=warm|cyber|editorial|corporate`, `--bpm`, `--duration`, `--drops`).
+- `scripts/analyze-audio.mjs` — Headless CLI Voiceover Silence (`SEG`/`PARA`) + 60fps FFT Audio-Reactive Envelope (`AUDIO_FRAMES`) compiler for `.wav/.mp3/.m4a` (`npm run analyze`).
 - `scripts/vo-fft-analyzer.html` — Browser-based offline Voiceover Silence (`SEG`/`PARA`) + 60fps FFT Audio-Reactive Envelope (`AUDIO_FRAMES`) compiler.
-- `scripts/kepala-ekspresi.py` — Local Python (PIL/OpenCV) character head expression & blink sprite sheet generator from a single reference photo/illustration.
+- `scripts/kepala-ekspresi.py` — Alpha-bounding-box aware Python (Pillow) 8-expression sprite generator + parametric SVG `viseme-rig.svg` generator.
+- `scripts/sync-plugin.mjs` — Deterministic SHA-256 root-to-plugin synchronizer (`npm run sync`).
 
 ---
 

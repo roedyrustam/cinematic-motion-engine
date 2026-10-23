@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Motion Pro v2.1 — Sketsa Vintage &amp; Cyanotype Blueprint Starter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@600;700&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    :root {
+      --blueprint-navy: #0D2238;
+      --blueprint-deep: #081524;
+      --chalk-ivory: #F4EFE6;
+      --cyan-line: #38BDF8;
+      --amber-callout: #FBBF24;
+      --grid-major: rgba(56, 189, 248, 0.16);
+      --grid-minor: rgba(56, 189, 248, 0.06);
+      --font-serif: 'Instrument Serif', serif;
+      --font-hand: 'Caveat', cursive;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #050B12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #stage {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      background: radial-gradient(circle at 50% 50%, var(--blueprint-navy), var(--blueprint-deep));
+      overflow: hidden;
+      transform-origin: 50% 50%;
+    }
+
+    .safe {
+      position: absolute;
+      inset: 0;
+      transform-origin: 50% 50%;
+    }
+
+    #world {
+      position: absolute;
+      inset: -1400px;
+      width: 4720px;
+      height: 3880px;
+      transform-origin: 50% 50%;
+      will-change: transform, filter;
+    }
+
+    /* Surface Layer 1: Cyanotype Technical Millimeter Grid */
+    #blueprint-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+      background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+      pointer-events: none;
+    }
+
+    /* Surface Layer 2: Live Stroke-Dashoffset Schematic Canvas */
+    #schematic-svg {
+      position: absolute;
+      left: 1400px;
+      top: 1400px;
+      width: 3400px;
+      height: 1400px;
+      pointer-events: none;
+    }
+
+    #dom {
+      position: absolute;
+      left: 1400px;
+      top: 1400px;
+      width: 1920px;
+      height: 1080px;
+      pointer-events: none;
+    }
+
+    .beat-zone {
+      position: absolute;
+    }
+
+    .patent-tag {
+      font-family: var(--font-mono);
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--cyan-line);
+      margin-bottom: 14px;
+      display: inline-block;
+    }
+
+    .blueprint-hero {
+      font-family: var(--font-serif);
+      font-size: 136px;
+      font-weight: 400;
+      line-height: 0.94;
+      color: var(--chalk-ivory);
+    }
+
+    .hand-note {
+      font-family: var(--font-hand);
+      font-size: 58px;
+      font-weight: 700;
+      color: var(--amber-callout);
+      margin-top: 20px;
+      transform: rotate(-2deg);
+      display: inline-block;
+    }
+
+    .sketch-path {
+      fill: none;
+      stroke: var(--chalk-ivory);
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 1800;
+      stroke-dashoffset: 1800;
+    }
+
+    .accent-arc {
+      fill: none;
+      stroke: var(--amber-callout);
+      stroke-width: 3;
+      stroke-dasharray: 900;
+      stroke-dashoffset: 900;
+    }
+  </style>
+</head>
+
+<body>
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <filter id="mb-world" x="-70%" y="-70%" width="240%" height="240%">
+        <feGaussianBlur id="mb-world-node" in="SourceGraphic" stdDeviation="0 0" />
+      </filter>
+    </defs>
+  </svg>
+
+  <div id="stage">
+    <div class="safe" id="safe-wrap">
+      <div id="world">
+        <div id="blueprint-grid"></div>
+
+        <!-- Surface Layer 2: Real-Time Drawn SVG Patent Schematics -->
+        <svg id="schematic-svg" viewBox="0 0 3400 1400">
+          <!-- Compass Rose & Turbine Geometry at Beat 1 -->
+          <g id="compass-rose" transform="translate(1340, 540)">
+            <circle cx="0" cy="0" r="290" fill="none" stroke="rgba(56,189,248,0.28)" stroke-width="2"
+              stroke-dasharray="12 8" />
+            <circle class="sketch-path" id="path-circle-1" cx="0" cy="0" r="210" />
+            <polygon class="sketch-path" id="path-hex" points="0,-190 165,-95 165,95 0,190 -165,95 -165,-95" />
+            <path class="accent-arc" id="path-caliper" d="M -250 -60 A 260 260 0 0 1 250 -60" />
+          </g>
+
+          <!-- Connecting Pipeline to Beat 2 -->
+          <path class="sketch-path" id="path-bridge" d="M 1560 540 L 2180 540 L 2340 420 L 2680 420" />
+        </svg>
+
+        <div id="dom">
+          <!-- BEAT 1: Landmark at (960, 540) -->
+          <div class="beat-zone" style="left: 170px; top: 230px; width: 880px;">
+            <div class="patent-tag" id="s1-tag">[FIG. 01 · TOPOLOGI MESIN PENALARAN]</div>
+            <div class="blueprint-hero" id="s1-hero">Geometri<br />Deterministik</div>
+            <div class="hand-note" id="s1-note">↳ Sudut presisi 60° tanpa deviasi acak!</div>
+          </div>
+
+          <!-- BEAT 2: Landmark at (2680, 540) -->
+          <div class="beat-zone" style="left: 2120px; top: 240px; width: 1180px;">
+            <div class="patent-tag" id="s2-tag">[FIG. 02 · KALIBRASI AKHIR]</div>
+            <div class="blueprint-hero" id="s2-hero">Skala 1:1<br />Terkunci Penuh</div>
+            <div class="hand-note" id="s2-note">↳ Terverifikasi di seluruh 60 frame/detik.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const isClean = params.get('clean') === '1';
+    const ratio = params.get('ratio') || '16x9';
+
+    let W = 1920, H = 1080;
+    const stageEl = document.getElementById('stage');
+    const safeWrap = document.getElementById('safe-wrap');
+
+    if (ratio === '9x16') {
+      W = 1080; H = 1920;
+      stageEl.style.width = '1080px';
+      stageEl.style.height = '1920px';
+      safeWrap.style.transform = 'scale(0.78)';
+    } else if (ratio === '1x1') {
+      W = 1080; H = 1080;
+      stageEl.style.width = '1080px';
+      stageEl.style.height = '1080px';
+      safeWrap.style.transform = 'scale(0.86)';
+    }
+
+    const DURATION = 8.0;
+    const FPS = 60;
+    const BEATS = [0.25, 1.0, 1.9, 2.8, 3.7, 4.4, 5.4, 6.6, 7.6];
+
+    function fitViewport() {
+      if (isClean) {
+        stageEl.style.transform = 'none';
+        return;
+      }
+      const s = Math.min(window.innerWidth / W, window.innerHeight / H);
+      stageEl.style.transform = `scale(${s.toFixed(4)})`;
+    }
+    window.addEventListener('resize', fitViewport);
+    fitViewport();
+
+    const worldEl = document.getElementById('world');
+    const blurNode = document.getElementById('mb-world-node');
+    const compassEl = document.getElementById('compass-rose');
+    const cam = { x: 0, y: 0, z: 1, rot: 0 };
+
+    function applyCam() {
+      worldEl.style.transform = `translate3d(${cam.x.toFixed(2)}px, ${cam.y.toFixed(2)}px, 0) scale(${cam.z.toFixed(4)}) rotate(${cam.rot.toFixed(3)}deg)`;
+    }
+    function setWorldBlur(dx, dy) {
+      if (dx <= 0.1 && dy <= 0.1) {
+        blurNode.setAttribute('stdDeviation', '0 0');
+        worldEl.style.filter = 'none';
+      } else {
+        worldEl.style.filter = 'url(#mb-world)';
+        blurNode.setAttribute('stdDeviation', `${dx.toFixed(1)} ${dy.toFixed(1)}`);
+      }
+    }
+    function calcShot(wx, wy, z = 1) {
+      return { x: -(wx - 960) * z, y: -(wy - 540) * z, z };
+    }
+    function into(tl, at, wx, wy, z = 1.15, rot = 0, dur = 0.26) {
+      const target = calcShot(wx, wy, z);
+      const dx = Math.min(38, Math.abs(target.x - cam.x) * 0.022);
+      const dy = Math.min(26, Math.abs(target.y - cam.y) * 0.022);
+      tl.call(() => setWorldBlur(dx, dy), null, at);
+      tl.to(cam, { x: target.x, y: target.y, z: target.z, rot, duration: dur, ease: 'expo.in', onUpdate: applyCam }, at);
+    }
+    function settle(tl, at, wx, wy, z = 1.0, rot = 0, dur = 0.28) {
+      const target = calcShot(wx, wy, z);
+      tl.to(cam, {
+        x: target.x, y: target.y, z: target.z, rot,
+        duration: dur, ease: 'expo.out', onUpdate: applyCam,
+        onComplete: () => setWorldBlur(0, 0)
+      }, at);
+      tl.call(() => setWorldBlur(0, 0), null, at + dur);
+    }
+    function look(tl, at, wx, wy, z = 1.05, dur = 1.8, rot = 0) {
+      const target = calcShot(wx, wy, z);
+      tl.to(cam, { x: target.x, y: target.y, z: target.z, rot, duration: dur, ease: 'sine.inOut', onUpdate: applyCam }, at);
+    }
+    function home(tl, at, dur = 0.55) {
+      tl.to(cam, { x: 0, y: 0, z: 1, rot: 0, duration: dur, ease: 'power3.inOut', onUpdate: applyCam }, at);
+    }
+
+    const tl = gsap.timeline({
+      paused: isClean,
+      repeat: isClean ? 0 : -1
+    });
+    tl.eventCallback('onUpdate', () => {
+      const t = tl.time();
+      compassEl.setAttribute('transform', `translate(1340, 540) rotate(${(t * 12).toFixed(2)})`);
+    });
+
+    // Beat 1: Live Blueprint Stroke Drawing + Phrase Accretion
+    tl.fromTo('#s1-tag', { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 0.32, ease: 'power3.out' }, 0.12);
+    tl.fromTo('#s1-hero', { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.42, ease: 'expo.out' }, 0.28);
+    tl.to('#path-circle-1', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, 0.20);
+    tl.to('#path-hex', { strokeDashoffset: 0, duration: 1.2, ease: 'power2.inOut' }, 0.45);
+    tl.to('#path-caliper', { strokeDashoffset: 0, duration: 0.85, ease: 'power2.out' }, 0.75);
+    tl.fromTo('#s1-note', { scale: 0.85, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.7)' }, 0.95);
+    look(tl, 0.20, 1000, 530, 1.06, 3.1, -0.6);
+
+    // Draw bridge line & Whip-Pan to Beat 2
+    tl.to('#path-bridge', { strokeDashoffset: 0, duration: 0.65, ease: 'power2.inOut' }, 3.30);
+    into(tl, 3.60, 2680, 520, 1.18, 2.2, 0.26);
+    settle(tl, 3.86, 2680, 520, 1.03, 0, 0.28);
+
+    tl.fromTo('#s2-tag', { autoAlpha: 0, x: -30 }, { autoAlpha: 1, x: 0, duration: 0.32, ease: 'power3.out' }, 3.92);
+    tl.fromTo('#s2-hero', { y: 50, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.42, ease: 'expo.out' }, 4.12);
+    tl.fromTo('#s2-note', { scale: 0.85, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.35, ease: 'back.out(1.7)' }, 4.48);
+    look(tl, 4.20, 2710, 510, 1.07, 2.8, -0.5);
+
+    home(tl, 7.35, 0.65);
+
+    window.OPENER = {
+      W, H, DURATION, FPS, RATIO: ratio, BEATS, tl,
+      ready: true,
+      clipsReady: () => Promise.resolve(true),
+      seek(t) {
+        tl.pause();
+        tl.time(Math.max(0, Math.min(DURATION, t)));
+        applyCam();
+      },
+      async seekFrame(t) {
+        this.seek(t);
+        await new Promise((r) => requestAnimationFrame(r));
+      },
+      play() { tl.play(0); }
+    };
+  </script>
+</body>
+
+</html>

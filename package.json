@@ -1,18 +1,48 @@
 {
   "name": "cinematic-motion-engine",
-  "version": "2.0.0",
-  "description": "Standalone Broadcast Programmatic Motion Graphics, Kinetic Typography & 60fps Video Engine (Bang Motion Pro v2.0)",
+  "version": "2.1.0",
+  "description": "Standalone Broadcast Programmatic Motion Graphics, Kinetic Typography, Living Cartoon Stage & 60fps Video Engine for AI Agents (Antigravity, Claude Code, Cursor, Codex)",
   "type": "module",
   "author": "Roedy Rustam",
   "license": "MIT",
+  "homepage": "https://github.com/roedyrustam/cinematic-motion-engine#readme",
+  "bugs": {
+    "url": "https://github.com/roedyrustam/cinematic-motion-engine/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/roedyrustam/cinematic-motion-engine.git"
   },
+  "keywords": [
+    "motion-graphics",
+    "programmatic-video",
+    "kinetic-typography",
+    "gsap",
+    "threejs",
+    "webgpu",
+    "svg-animation",
+    "cartoon-rigging",
+    "explainer-video",
+    "ffmpeg",
+    "puppeteer",
+    "ai-agent-skill",
+    "antigravity-plugin",
+    "claude-code-skill",
+    "cursor-rules",
+    "broadcast-animation",
+    "audio-reactive",
+    "fft-visualizer"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "snap": "node scripts/snap-contact-sheet.mjs",
     "export": "node scripts/export-video.mjs",
-    "audio": "node scripts/generate-audio.mjs"
+    "audio": "node scripts/generate-audio.mjs",
+    "analyze": "node scripts/analyze-audio.mjs",
+    "audit": "node scripts/audit-anti-ppt.mjs",
+    "sync": "node scripts/sync-plugin.mjs"
   },
   "optionalDependencies": {
     "puppeteer-core": "^24.0.0"

@@ -1,6 +1,13 @@
 node_modules/
+package-lock.json
 snaps/
 *.mp4
+*.mov
+*.webm
 *.wav
+audio-frames.json
+vo-data.js
+vo-data.json
+audit-report.json
 .DS_Store
 Thumbs.db
