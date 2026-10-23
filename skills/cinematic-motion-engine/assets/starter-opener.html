@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Motion Pro v2.0 — Sovereign Opener Starter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@500;700&family=Syne:wght@700;800&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    :root {
+      --bg-ink: #0B0D12;
+      --paper-ivory: #F4EFE6;
+      --accent-vermilion: #FF3B1D;
+      --accent-acid: #D4FF33;
+      --accent-cobalt: #2563EB;
+      --grid-hairline: rgba(244, 239, 230, 0.09);
+      --font-display: 'Syne', sans-serif;
+      --font-serif: 'Instrument Serif', serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #050608;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    #stage {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      background: var(--bg-ink);
+      overflow: hidden;
+      transform-origin: 50% 50%;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.75);
+    }
+
+    /* Unified World Rig wrapping both WebGL Canvas and DOM Landmarks */
+    #world {
+      position: absolute;
+      inset: -1400px;
+      width: 4720px;
+      height: 3880px;
+      transform-origin: 50% 50%;
+      will-change: transform, filter;
+    }
+
+    /* Surface Layer 1: Architectural Coordinate Hairline Grid */
+    #world-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, var(--grid-hairline) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-hairline) 1px, transparent 1px);
+      background-size: 120px 120px;
+      pointer-events: none;
+    }
+
+    /* Surface Layer 2: Three.js Speed-Ramped Particle Lattice */
+    #gl {
+      position: absolute;
+      left: 1400px;
+      top: 1400px;
+      width: 1920px;
+      height: 1080px;
+      pointer-events: none;
+    }
+
+    #dom {
+      position: absolute;
+      left: 1400px;
+      top: 1400px;
+      width: 1920px;
+      height: 1080px;
+      pointer-events: none;
+    }
+
+    .landmark {
+      position: absolute;
+      transform-origin: 50% 50%;
+    }
+
+    .hero-claim {
+      font-family: var(--font-display);
+      font-size: 132px;
+      font-weight: 800;
+      line-height: 0.94;
+      letter-spacing: -0.04em;
+      color: var(--paper-ivory);
+      font-variant-numeric: tabular-nums;
+      text-transform: uppercase;
+    }
+
+    .serif-accent {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent-acid);
+      text-transform: none;
+    }
+
+    .world-label {
+      font-family: var(--font-mono);
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--accent-vermilion);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+
+    .body-claim {
+      font-family: var(--font-display);
+      font-size: 52px;
+      font-weight: 700;
+      line-height: 1.08;
+      color: var(--paper-ivory);
+      margin-top: 24px;
+    }
+
+    .mask-line {
+      overflow: hidden;
+      display: block;
+      padding-bottom: 8px;
+    }
+
+    .word,
+    .char {
+      display: inline-block;
+      will-change: transform, opacity;
+    }
+
+    /* Light Leak & Grain Layers stay outside #world so they cover the lens */
+    #light-leak {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 80% 20%, rgba(255, 59, 29, 0.55), transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #grain-overlay {
+      position: absolute;
+      inset: 0;
+      filter: url(#film-grain);
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    /* Debug Scrub Bar (Hidden unless ?debug=1) */
+    #debug-bar {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(92vw, 960px);
+      background: rgba(11, 13, 18, 0.92);
+      border: 1px solid rgba(244, 239, 230, 0.2);
+      padding: 10px 18px;
+      border-radius: 8px;
+      display: none;
+      align-items: center;
+      gap: 14px;
+      z-index: 9999;
+      font-family: var(--font-mono);
+      color: var(--paper-ivory);
+      font-size: 14px;
+    }
+
+    #debug-bar.active {
+      display: flex;
+    }
+
+    #debug-scrub {
+      flex: 1;
+      accent-color: var(--accent-vermilion);
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <svg width="0" height="0" style="position:absolute">
+    <defs id="svg-defs">
+      <filter id="film-grain" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.72" numOctaves="3" seed="19" stitchTiles="stitch"
+          result="n" />
+        <feColorMatrix type="saturate" values="0" in="n" />
+      </filter>
+      <filter id="mb-world" x="-70%" y="-70%" width="240%" height="240%">
+        <feGaussianBlur id="mb-world-node" in="SourceGraphic" stdDeviation="0 0" />
+      </filter>
+    </defs>
+  </svg>
+
+  <div id="stage">
+    <div id="world">
+      <div id="world-grid"></div>
+      <canvas id="gl" width="1920" height="1080"></canvas>
+      <div id="dom">
+        <!-- Beat 1 Landmark: Center (960, 540) -->
+        <div id="beat-1" class="landmark" style="left: 180px; top: 280px; width: 1560px;">
+          <span class="world-label">[01 // KINETIC ARCHITECT]</span>
+          <h1 class="hero-claim">
+            <span class="mask-line"><span class="word">ZERO</span> <span class="word serif-accent">Slide</span></span>
+            <span class="mask-line"><span class="word">DECK</span> <span class="word">MOTION</span></span>
+          </h1>
+          <p class="body-claim">100% Frame-Deterministic Broadcast Engine</p>
+        </div>
+
+        <!-- Beat 2 Landmark: East Sector (2580, 420) -->
+        <div id="beat-2" class="landmark" style="left: 2180px; top: 220px; width: 1480px;">
+          <span class="world-label">[02 // PHYSICAL VELOCITY]</span>
+          <div id="metric-slam" class="hero-claim" style="font-size: 196px; color: var(--accent-acid);">60.0 FPS</div>
+          <p class="body-claim">Directional SVG Motion Blur + Speed-Ramped Shaders</p>
+        </div>
+
+        <!-- Beat 3 Landmark: South-West Sector (420, 1740) -->
+        <div id="beat-3" class="landmark" style="left: 120px; top: 1480px; width: 1580px;">
+          <span class="world-label">[03 // SOVEREIGN CRAFT]</span>
+          <h2 class="hero-claim">
+            <span class="mask-line"><span class="word">BUILT</span> <span class="word">IN</span> <span
+                class="word serif-accent">Pure</span> <span class="word">CODE.</span></span>
+          </h2>
+          <p class="body-claim">Ready for 16:9, 9:16 &amp; Visually Lossless MP4 Export</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="light-leak"></div>
+    <div id="grain-overlay"></div>
+  </div>
+
+  <div id="debug-bar">
+    <button id="debug-toggle"
+      style="background:none;border:1px solid #F4EFE6;color:#F4EFE6;padding:4px 10px;cursor:pointer;">PAUSE</button>
+    <input id="debug-scrub" type="range" min="0" max="9" step="0.016" value="0" />
+    <span id="debug-time">0.00s / 9.00s</span>
+  </div>
+
+  <script>
+    const W = 1920, H = 1080, DURATION = 9.0, FPS = 60;
+    const params = new URLSearchParams(window.location.search);
+    const isDebug = params.get('debug') === '1';
+    const isClean = params.get('clean') === '1';
+
+    // Responsive stage scaling
+    const stageEl = document.getElementById('stage');
+    function fitStage() {
+      const s = Math.min(window.innerWidth / W, window.innerHeight / H);
+      stageEl.style.transform = `scale(${s})`;
+    }
+    window.addEventListener('resize', fitStage);
+    fitStage();
+
+    // 1. Deterministic PRNG (Mulberry32)
+    function mulberry32(seed = 0xB4662026) {
+      return function () {
+        let t = (seed += 0x6D2B79F5);
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+    const rand = mulberry32(20261024);
+
+    // 2. Monotonic Distance Integral D(t) for Speed-Ramped Three.js Field
+    const SAMPLES = 1800;
+    const DT_TABLE = new Float32Array(SAMPLES + 1);
+    function speedAt(t) {
+      if (t > 2.6 && t < 3.2) return 4.2;
+      if (t > 5.6 && t < 6.2) return 4.5;
+      return 0.65;
+    }
+    (function buildD() {
+      let acc = 0;
+      const dt = DURATION / SAMPLES;
+      for (let i = 0; i <= SAMPLES; i++) {
+        DT_TABLE[i] = acc;
+        acc += speedAt(i * dt) * dt;
+      }
+    })();
+    function D(t) {
+      const clamped = Math.max(0, Math.min(DURATION, t));
+      const idx = (clamped / DURATION) * SAMPLES;
+      const i0 = Math.floor(idx), i1 = Math.min(SAMPLES, i0 + 1);
+      const f = idx - i0;
+      return DT_TABLE[i0] * (1 - f) + DT_TABLE[i1] * f;
+    }
+
+    // 3. Deterministic Offline Audio-Reactive Envelope Sampler
+    window.AUDIO_FRAMES = window.AUDIO_FRAMES || [];
+    function sampleAudio(t) {
+      const frames = window.AUDIO_FRAMES;
+      if (!frames.length) {
+        const pulse = Math.pow(Math.max(0, Math.sin(t * Math.PI * 2)), 6);
+        return { bass: pulse * 0.6, mid: pulse * 0.3, high: 0.15, onset: pulse > 0.85 ? 1 : 0 };
+      }
+      const idx = Math.max(0, t * FPS);
+      const i0 = Math.min(frames.length - 1, Math.floor(idx));
+      const i1 = Math.min(frames.length - 1, i0 + 1);
+      const f = idx - i0;
+      return {
+        bass: (frames[i0][0] * (1 - f) + frames[i1][0] * f) / 100,
+        mid: (frames[i0][1] * (1 - f) + frames[i1][1] * f) / 100,
+        high: (frames[i0][2] * (1 - f) + frames[i1][2] * f) / 100,
+        onset: frames[i0][3] || 0
+      };
+    }
+
+    // 4. Three.js Deterministic Lattice inside #world
+    const canvas = document.getElementById('gl');
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setSize(W, H, false);
+    renderer.setPixelRatio(1);
+    const scene = new THREE.Scene();
+    const camera3D = new THREE.PerspectiveCamera(50, W / H, 0.1, 100);
+    camera3D.position.z = 12;
+
+    const geo = new THREE.IcosahedronGeometry(3.4, 2);
+    const mat = new THREE.MeshBasicMaterial({ color: 0xFF3B1D, wireframe: true, transparent: true, opacity: 0.28 });
+    const wireMesh = new THREE.Mesh(geo, mat);
+    scene.add(wireMesh);
+
+    const pGeo = new THREE.BufferGeometry();
+    const pCount = 240;
+    const pPos = new Float32Array(pCount * 3);
+    for (let i = 0; i < pCount * 3; i += 3) {
+      pPos[i] = (rand() - 0.5) * 28;
+      pPos[i + 1] = (rand() - 0.5) * 16;
+      pPos[i + 2] = (rand() - 0.5) * 12;
+    }
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+    const pMat = new THREE.PointsMaterial({ color: 0xD4FF33, size: 0.09 });
+    const points = new THREE.Points(pGeo, pMat);
+    scene.add(points);
+
+    function render3D(t) {
+      const d = D(t);
+      const audio = sampleAudio(t);
+      wireMesh.rotation.y = d * 0.55;
+      wireMesh.rotation.x = d * 0.28;
+      const s = 1 + audio.bass * 0.18;
+      wireMesh.scale.set(s, s, s);
+      points.rotation.z = -d * 0.12;
+      renderer.render(scene, camera3D);
+    }
+
+    // 5. Camera Rig (#world) & Directional SVG Motion Blur
+    const worldEl = document.getElementById('world');
+    const worldBlurNode = document.getElementById('mb-world-node');
+    const cam = { x: 0, y: 0, z: 1, rot: 0 };
+
+    function applyCam() {
+      worldEl.style.transform = `translate3d(${cam.x.toFixed(2)}px, ${cam.y.toFixed(2)}px, 0) scale(${cam.z.toFixed(4)}) rotate(${cam.rot.toFixed(3)}deg)`;
+    }
+    function setWorldBlur(dx, dy) {
+      if (dx <= 0.1 && dy <= 0.1) {
+        worldBlurNode.setAttribute('stdDeviation', '0 0');
+        worldEl.style.filter = 'none';
+      } else {
+        worldEl.style.filter = 'url(#mb-world)';
+        worldBlurNode.setAttribute('stdDeviation', `${dx.toFixed(1)} ${dy.toFixed(1)}`);
+      }
+    }
+    function calcShot(wx, wy, z = 1) {
+      return { x: -(wx - W / 2) * z, y: -(wy - H / 2) * z, z };
+    }
+    function into(tl, at, wx, wy, z = 1.15, rot = 0, dur = 0.26) {
+      const target = calcShot(wx, wy, z);
+      const dx = Math.min(40, Math.abs(target.x - cam.x) * 0.022);
+      const dy = Math.min(28, Math.abs(target.y - cam.y) * 0.022);
+      tl.call(() => setWorldBlur(dx, dy), null, at);
+      tl.to(cam, { x: target.x, y: target.y, z: target.z, rot, duration: dur, ease: 'expo.in', onUpdate: applyCam }, at);
+    }
+    function settle(tl, at, wx, wy, z = 1.0, rot = 0, dur = 0.28) {
+      const target = calcShot(wx, wy, z);
+      tl.to(cam, {
+        x: target.x, y: target.y, z: target.z, rot,
+        duration: dur, ease: 'expo.out', onUpdate: applyCam,
+        onComplete: () => setWorldBlur(0, 0)
+      }, at);
+      tl.call(() => setWorldBlur(0, 0), null, at + dur);
+    }
+    function look(tl, at, wx, wy, z = 1.05, dur = 1.8, rot = 0) {
+      const target = calcShot(wx, wy, z);
+      tl.to(cam, { x: target.x, y: target.y, z: target.z, rot, duration: dur, ease: 'sine.inOut', onUpdate: applyCam }, at);
+    }
+    function home(tl, at, dur = 0.55) {
+      tl.to(cam, { x: 0, y: 0, z: 1, rot: 0, duration: dur, ease: 'power3.inOut', onUpdate: applyCam }, at);
+    }
+
+    // 6. Master Deterministic GSAP Timeline
+    const tl = gsap.timeline({
+      paused: isClean,
+      repeat: isClean ? 0 : -1,
+      onUpdate: () => {
+        const t = tl.time();
+        render3D(t);
+        if (isDebug) {
+          document.getElementById('debug-scrub').value = t;
+          document.getElementById('debug-time').textContent = `${t.toFixed(2)}s / ${DURATION.toFixed(2)}s`;
+        }
+      }
+    });
+
+    // Beat 1: Word mask entrance + slow camera drift
+    tl.fromTo('#beat-1 .word', { yPercent: 115 }, { yPercent: 0, duration: 0.55, stagger: 0.06, ease: 'power4.out' }, 0.1);
+    look(tl, 0.1, 990, 520, 1.06, 2.4, -0.8);
+
+    // Whip-Pan Transition 1 -> Beat 2 at (2920, 520)
+    into(tl, 2.65, 2920, 520, 1.22, -3.5, 0.26);
+    settle(tl, 2.91, 2920, 520, 1.04, 0, 0.28);
+    tl.fromTo('#metric-slam', { scale: 2.1, autoAlpha: 0 }, { scale: 1, autoAlpha: 1, duration: 0.32, ease: 'back.out(1.7)' }, 2.92);
+    look(tl, 3.20, 2960, 500, 1.09, 2.3, 1.0);
+
+    // Whip-Pan Transition 2 -> Beat 3 at (910, 1780) + Light Leak Flash
+    tl.fromTo('#light-leak', { opacity: 0 }, { opacity: 0.85, duration: 0.18, yoyo: true, repeat: 1 }, 5.65);
+    into(tl, 5.65, 910, 1780, 1.24, 4.0, 0.26);
+    settle(tl, 5.91, 910, 1780, 1.02, 0, 0.28);
+    tl.fromTo('#beat-3 .word', { yPercent: 115 }, { yPercent: 0, duration: 0.5, stagger: 0.05, ease: 'expo.out' }, 5.95);
+    look(tl, 6.25, 940, 1760, 1.07, 2.1, -0.6);
+
+    // Return Home for Seamless Loop
+    home(tl, 8.40, 0.60);
+
+    // 7. Debug Bar Wiring
+    if (isDebug) {
+      const bar = document.getElementById('debug-bar');
+      const scrub = document.getElementById('debug-scrub');
+      const btn = document.getElementById('debug-toggle');
+      bar.classList.add('active');
+      scrub.max = DURATION;
+      scrub.addEventListener('input', (e) => {
+        tl.pause();
+        btn.textContent = 'PLAY';
+        window.OPENER.seek(parseFloat(e.target.value));
+      });
+      btn.addEventListener('click', () => {
+        if (tl.paused()) { tl.play(); btn.textContent = 'PAUSE'; }
+        else { tl.pause(); btn.textContent = 'PLAY'; }
+      });
+    }
+
+    // 8. Automation Contract for snap-contact-sheet.mjs & export-video.mjs
+    window.OPENER = {
+      W, H, DURATION, FPS, tl,
+      ready: true,
+      clipsReady: () => Promise.resolve(true),
+      seek(t) {
+        tl.pause();
+        tl.time(Math.max(0, Math.min(DURATION, t)));
+        applyCam();
+        render3D(tl.time());
+      },
+      async seekFrame(t) {
+        this.seek(t);
+        await new Promise((r) => requestAnimationFrame(r));
+      },
+      play() { tl.play(0); }
+    };
+    render3D(0);
+  </script>
+</body>
+
+</html>

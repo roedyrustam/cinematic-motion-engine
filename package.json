@@ -1,0 +1,20 @@
+{
+  "name": "cinematic-motion-engine",
+  "version": "2.0.0",
+  "description": "Standalone Broadcast Programmatic Motion Graphics, Kinetic Typography & 60fps Video Engine (Bang Motion Pro v2.0)",
+  "type": "module",
+  "author": "Roedy Rustam",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/roedyrustam/cinematic-motion-engine.git"
+  },
+  "scripts": {
+    "snap": "node scripts/snap-contact-sheet.mjs",
+    "export": "node scripts/export-video.mjs",
+    "audio": "node scripts/generate-audio.mjs"
+  },
+  "optionalDependencies": {
+    "puppeteer-core": "^24.0.0"
+  }
+}

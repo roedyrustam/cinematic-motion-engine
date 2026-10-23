@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Vibe Motion Pro v2.0 — Offline Voiceover Silence (SEG/PARA) &amp; 60fps FFT Audio Curve Compiler</title>
+  <style>
+    body {
+      font-family: 'JetBrains Mono', monospace;
+      background: #0B0D12;
+      color: #F4EFE6;
+      padding: 32px;
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #D4FF33;
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      background: #141821;
+      padding: 18px;
+      border: 1px solid rgba(244, 239, 230, 0.2);
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 460px;
+      background: #07080B;
+      color: #D4FF33;
+      border: 1px solid rgba(244, 239, 230, 0.25);
+      padding: 16px;
+      font-family: inherit;
+      font-size: 13px;
+      border-radius: 6px;
+    }
+
+    label {
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Vibe Motion Pro v2.0 — OFFLINE VO SILENCE &amp; 60FPS FFT COMPILER</h1>
+  <p style="margin-bottom:16px;color:#9BA3B0;">
+    Drop any <code>vo.mp3</code> or music track to extract deterministic <code>PARA</code> / <code>SEG</code> speech
+    windows and 60fps <code>AUDIO_FRAMES</code> [bass, mid, high, onset] arrays for <code>index.html</code>.
+  </p>
+  <div class="controls">
+    <input type="file" id="audio-input" accept="audio/*" />
+    <label>Silence Threshold (dB): <input type="number" id="db-thresh" value="-38" style="width:65px" /></label>
+    <label>Min Silence (ms): <input type="number" id="min-silence" value="180" style="width:75px" /></label>
+    <label>FPS: <input type="number" id="fps-val" value="60" style="width:55px" /></label>
+  </div>
+  <textarea id="output" readonly
+    placeholder="Select an audio file above to generate deterministic SEG, PARA, and AUDIO_FRAMES constants..."></textarea>
+
+  <script>
+    const input = document.getElementById('audio-input');
+    const output = document.getElementById('output');
+
+    input.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      output.value = 'Decoding and analyzing audio buffer...';
+
+      const arrayBuf = await file.arrayBuffer();
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuf);
+
+      const channel = audioBuffer.getChannelData(0);
+      const sr = audioBuffer.sampleRate;
+      const duration = audioBuffer.duration;
+      const fps = parseInt(document.getElementById('fps-val').value, 10) || 60;
+      const dbThresh = parseFloat(document.getElementById('db-thresh').value) || -38;
+      const minSilenceSec = (parseInt(document.getElementById('min-silence').value, 10) || 180) / 1000;
+      const ampThresh = Math.pow(10, dbThresh / 20);
+
+      // 1. Extract Speech Segments (SEG) & Paragraph Windows (PARA)
+      const winSamples = Math.floor(sr * 0.02);
+      const rawSpeech = [];
+      let inSpeech = false;
+      let segStart = 0;
+      let silenceRun = 0;
+
+      for (let i = 0; i < channel.length; i += winSamples) {
+        let sumSq = 0;
+        const end = Math.min(channel.length, i + winSamples);
+        for (let j = i; j < end; j++) sumSq += channel[j] * channel[j];
+        const rms = Math.sqrt(sumSq / (end - i));
+        const t = i / sr;
+
+        if (rms >= ampThresh) {
+          if (!inSpeech) {
+            inSpeech = true;
+            segStart = t;
+          }
+          silenceRun = 0;
+        } else if (inSpeech) {
+          silenceRun += 0.02;
+          if (silenceRun >= minSilenceSec) {
+            inSpeech = false;
+            rawSpeech.push({
+              start: Number(segStart.toFixed(2)),
+              end: Number((t - silenceRun).toFixed(2)),
+              dur: Number((t - silenceRun - segStart).toFixed(2))
+            });
+          }
+        }
+      }
+      if (inSpeech) {
+        rawSpeech.push({
+          start: Number(segStart.toFixed(2)),
+          end: Number(duration.toFixed(2)),
+          dur: Number((duration - segStart).toFixed(2))
+        });
+      }
+
+      // Group into PARA when silence gap >= 0.48s
+      const PARA = [];
+      for (const seg of rawSpeech) {
+        const prev = PARA[PARA.length - 1];
+        if (!prev || seg.start - prev.end >= 0.48) {
+          PARA.push({ id: `p${PARA.length + 1}`, start: seg.start, end: seg.end });
+        } else {
+          prev.end = seg.end;
+        }
+      }
+
+      // 2. Compute Deterministic 60fps Multi-Band Energy & Onset Table (AUDIO_FRAMES)
+      const totalFrames = Math.ceil(duration * fps);
+      const samplesPerFrame = Math.floor(sr / fps);
+      const AUDIO_FRAMES = [];
+      let prevBass = 0;
+
+      for (let f = 0; f < totalFrames; f++) {
+        const s0 = f * samplesPerFrame;
+        const s1 = Math.min(channel.length, s0 + samplesPerFrame);
+        let low = 0, mid = 0, high = 0;
+        let lp = 0, bp = 0;
+
+        for (let i = s0; i < s1; i++) {
+          const x = channel[i];
+          lp = lp * 0.92 + x * 0.08;
+          bp = bp * 0.75 + (x - lp) * 0.25;
+          const hp = x - lp - bp;
+          low += lp * lp;
+          mid += bp * bp;
+          high += hp * hp;
+        }
+        const n = Math.max(1, s1 - s0);
+        const bassNorm = Math.min(100, Math.round(Math.sqrt(low / n) * 420));
+        const midNorm = Math.min(100, Math.round(Math.sqrt(mid / n) * 380));
+        const highNorm = Math.min(100, Math.round(Math.sqrt(high / n) * 460));
+        const onset = bassNorm - prevBass > 22 && bassNorm > 45 ? 1 : 0;
+        prevBass = bassNorm;
+        AUDIO_FRAMES.push([bassNorm, midNorm, highNorm, onset]);
+      }
+
+      output.value = [
+        `// Generated by Vibe Motion Pro v2.0 — Duration: ${duration.toFixed(2)}s @ ${fps}fps`,
+        `const DURATION = ${duration.toFixed(2)};`,
+        `const PARA = ${JSON.stringify(PARA, null, 2)};`,
+        `const SEG = ${JSON.stringify(rawSpeech, null, 2)};`,
+        `window.AUDIO_FRAMES = ${JSON.stringify(AUDIO_FRAMES)};`
+      ].join('\n\n');
+    });
+  </script>
+</body>
+
+</html>

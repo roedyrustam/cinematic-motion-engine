@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Motion Pro v2.0 — Kartun Panggung Hidup (Living Cartoon Stage Starter)</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #090B10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    #stage {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      background: #8ECAE6;
+      transform-origin: 50% 50%;
+    }
+
+    #camera-rig {
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      transform-origin: 50% 50%;
+      will-change: transform;
+    }
+
+    svg {
+      width: 1920px;
+      height: 1080px;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="stage">
+    <div id="camera-rig">
+      <!-- Zero Captions Allowed on Stage! Diegetic Sign Text Only (<= 3 words) -->
+      <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#FFE5B4" />
+            <stop offset="100%" stop-color="#8ECAE6" />
+          </linearGradient>
+        </defs>
+
+        <!-- Layer 1: Sky & Sun -->
+        <rect width="1920" height="1080" fill="url(#skyGrad)" />
+        <g transform="translate(1520, 210)">
+          <g id="prop-sun">
+            <circle cx="0" cy="0" r="88" fill="#FFB703" opacity="0.9" />
+          </g>
+        </g>
+
+        <!-- Moving Prop 1 & 2: Drifting Clouds -->
+        <g transform="translate(360, 180)">
+          <g id="prop-cloud-1">
+            <ellipse cx="0" cy="0" rx="110" ry="42" fill="#FFFFFF" opacity="0.88" />
+            <ellipse cx="55" cy="-14" rx="70" ry="34" fill="#FFFFFF" opacity="0.88" />
+          </g>
+        </g>
+        <g transform="translate(1120, 140)">
+          <g id="prop-cloud-2">
+            <ellipse cx="0" cy="0" rx="135" ry="46" fill="#FFFFFF" opacity="0.82" />
+          </g>
+        </g>
+
+        <!-- Layer 2: Distant Hills & Swaying Trees (Moving Props 3 & 4) -->
+        <path d="M0 780 Q480 620 980 760 T1920 710 L1920 1080 L0 1080 Z" fill="#52B788" />
+        <g transform="translate(320, 740)">
+          <g id="prop-tree-l">
+            <rect x="-14" y="-120" width="28" height="120" fill="#6C584C" />
+            <circle cx="0" cy="-150" r="78" fill="#2D6A4F" />
+          </g>
+        </g>
+        <g transform="translate(1580, 720)">
+          <g id="prop-tree-r">
+            <rect x="-16" y="-130" width="32" height="130" fill="#6C584C" />
+            <circle cx="0" cy="-165" r="86" fill="#40916C" />
+          </g>
+        </g>
+
+        <!-- Layer 3: Stage Floor & Diegetic Market Stall -->
+        <rect x="0" y="770" width="1920" height="310" fill="#DDA15E" />
+        <g transform="translate(1260, 620)">
+          <rect x="-180" y="-120" width="360" height="270" rx="12" fill="#BC6C25" />
+          <rect x="-195" y="-155" width="390" height="54" rx="8" fill="#E63946" />
+          <text x="0" y="-118" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="34"
+            fill="#FFF8E7">KOPI PAGI</text>
+          <!-- Moving Prop 5: Swinging Lantern -->
+          <g transform="translate(-140, -100)">
+            <g id="prop-lantern">
+              <line x1="0" y1="0" x2="0" y2="38" stroke="#2B2D42" stroke-width="4" />
+              <circle cx="0" cy="52" r="20" fill="#FFB703" />
+            </g>
+          </g>
+          <!-- Moving Prop 6: Rising Coffee Steam -->
+          <g transform="translate(40, -10)">
+            <g id="prop-steam">
+              <path d="M0 0 Q-12 -25 4 -50 T0 -95" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"
+                opacity="0.75" />
+            </g>
+          </g>
+        </g>
+
+        <!-- Articulated Character Rig (Moving Props 7, 8, 9, 10, 11: Torso, Head, Blink, Arm L, Arm R, Legs) -->
+        <!-- Static Placement Group at (740, 790) -->
+        <g transform="translate(740, 790)">
+          <g id="char-root">
+            <!-- Left Leg Placement -->
+            <g transform="translate(-26, -110)">
+              <g id="char-leg-l">
+                <rect x="-14" y="0" width="28" height="115" rx="12" fill="#1D3557" />
+              </g>
+            </g>
+            <!-- Right Leg Placement -->
+            <g transform="translate(26, -110)">
+              <g id="char-leg-r">
+                <rect x="-14" y="0" width="28" height="115" rx="12" fill="#1D3557" />
+              </g>
+            </g>
+            <!-- Torso Placement -->
+            <g transform="translate(0, -110)">
+              <g id="char-torso">
+                <rect x="-48" y="-150" width="96" height="156" rx="28" fill="#E63946" />
+                <!-- Left Arm Placement -->
+                <g transform="translate(-52, -132)">
+                  <g id="char-arm-l">
+                    <rect x="-14" y="0" width="28" height="112" rx="14" fill="#F4A261" />
+                  </g>
+                </g>
+                <!-- Right Arm Placement -->
+                <g transform="translate(52, -132)">
+                  <g id="char-arm-r">
+                    <rect x="-14" y="0" width="28" height="112" rx="14" fill="#F4A261" />
+                  </g>
+                </g>
+                <!-- Head Placement -->
+                <g transform="translate(0, -162)">
+                  <g id="char-head">
+                    <circle cx="0" cy="-48" r="54" fill="#F4A261" />
+                    <!-- Eyes (Open vs Blink) -->
+                    <g id="eyes-open">
+                      <circle cx="-18" cy="-54" r="7" fill="#1D3557" />
+                      <circle cx="18" cy="-54" r="7" fill="#1D3557" />
+                    </g>
+                    <g id="eyes-blink" style="display:none">
+                      <line x1="-26" y1="-54" x2="-10" y2="-54" stroke="#1D3557" stroke-width="4"
+                        stroke-linecap="round" />
+                      <line x1="10" y1="-54" x2="26" y2="-54" stroke="#1D3557" stroke-width="4"
+                        stroke-linecap="round" />
+                    </g>
+                    <!-- Expressive Talking Mouth -->
+                    <ellipse id="char-mouth" cx="0" cy="-26" rx="12" ry="6" fill="#1D3557" />
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+
+        <!-- Moving Prop 12: Foreground Swaying Grass -->
+        <g transform="translate(460, 980)">
+          <g id="prop-grass">
+            <path d="M-30 40 L-18 -25 L-4 40 L10 -32 L24 40" fill="none" stroke="#2D6A4F" stroke-width="8"
+              stroke-linecap="round" />
+          </g>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <script>
+    const W = 1920, H = 1080, DURATION = 8.0, FPS = 60;
+    const isClean = new URLSearchParams(window.location.search).get('clean') === '1';
+
+    const stageEl = document.getElementById('stage');
+    function fitStage() {
+      const s = Math.min(window.innerWidth / W, window.innerHeight / H);
+      stageEl.style.transform = `scale(${s})`;
+    }
+    window.addEventListener('resize', fitStage);
+    fitStage();
+
+    // Law 7: Manual SVG Joint Rig Helper J(el, tx, ty)
+    function J(selectorOrEl, tx = 0, ty = 0) {
+      const el = typeof selectorOrEl === 'string' ? document.querySelector(selectorOrEl) : selectorOrEl;
+      const state = { tx, ty, r: 0, sx: 1, sy: 1 };
+      const render = () => {
+        el.setAttribute(
+          'transform',
+          `translate(${state.tx.toFixed(2)},${state.ty.toFixed(2)}) rotate(${state.r.toFixed(2)}) scale(${state.sx.toFixed(3)},${state.sy.toFixed(3)})`
+        );
+      };
+      render();
+      return new Proxy(state, {
+        set(target, prop, val) {
+          target[prop] = val;
+          render();
+          return true;
+        }
+      });
+    }
+
+    // Bind 12 Living Stage Joints & Props
+    const joints = {
+      root: J('#char-root', 0, 0),
+      torso: J('#char-torso', 0, 0),
+      head: J('#char-head', 0, 0),
+      armL: J('#char-arm-l', 0, 0),
+      armR: J('#char-arm-r', 0, 0),
+      legL: J('#char-leg-l', 0, 0),
+      legR: J('#char-leg-r', 0, 0),
+      sun: J('#prop-sun', 0, 0),
+      cloud1: J('#prop-cloud-1', 0, 0),
+      cloud2: J('#prop-cloud-2', 0, 0),
+      treeL: J('#prop-tree-l', 0, 0),
+      treeR: J('#prop-tree-r', 0, 0),
+      lantern: J('#prop-lantern', 0, 0),
+      steam: J('#prop-steam', 0, 0),
+      grass: J('#prop-grass', 0, 0)
+    };
+
+    const eyesOpen = document.getElementById('eyes-open');
+    const eyesBlink = document.getElementById('eyes-blink');
+    const mouthEl = document.getElementById('char-mouth');
+    const camRig = document.getElementById('camera-rig');
+
+    // Camera Zoom Strictly Locked inside 1.08 .. 1.95 (Anti-Miniature Law)
+    const cam = { x: -120, y: -40, z: 1.22 };
+    function applyStageCam() {
+      const clampedZ = Math.max(1.08, Math.min(1.95, cam.z));
+      camRig.style.transform = `translate3d(${cam.x.toFixed(1)}px, ${cam.y.toFixed(1)}px, 0) scale(${clampedZ.toFixed(3)})`;
+    }
+
+    // Deterministic Stage Life Function (100% Pure Function of t)
+    function updateLivingStage(t) {
+      // 1. Ambient environment loops
+      joints.cloud1.tx = t * 24;
+      joints.cloud2.tx = -t * 18;
+      joints.sun.sx = 1 + Math.sin(t * 2.2) * 0.04;
+      joints.sun.sy = joints.sun.sx;
+      joints.treeL.r = Math.sin(t * 1.8) * 2.8;
+      joints.treeR.r = Math.cos(t * 1.5) * 2.4;
+      joints.lantern.r = Math.sin(t * 3.1) * 6.5;
+      joints.steam.ty = -((t * 28) % 36);
+      joints.grass.r = Math.sin(t * 4.0) * 4.5;
+
+      // 2. Character walk cycle (0s .. 3.5s) then expressive dialogue gesture (3.5s .. 8.0s)
+      if (t < 3.5) {
+        const w = t * 2.6 * Math.PI * 2;
+        joints.root.tx = t * 75;
+        joints.torso.ty = -Math.abs(Math.cos(w)) * 9;
+        joints.legL.r = Math.sin(w) * 26;
+        joints.legR.r = -Math.sin(w) * 26;
+        joints.armL.r = -Math.sin(w) * 22;
+        joints.armR.r = Math.sin(w) * 22;
+        joints.head.r = Math.sin(w * 0.5) * 4;
+      } else {
+        joints.root.tx = 3.5 * 75;
+        joints.legL.r = 0;
+        joints.legR.r = 0;
+        joints.torso.ty = Math.sin(t * 3.2) * 3;
+        joints.armR.r = -55 + Math.sin(t * 6.5) * 18;
+        joints.armL.r = 12 + Math.cos(t * 3.2) * 6;
+        joints.head.r = Math.sin(t * 4.0) * 5.5;
+      }
+
+      // 3. Deterministic Blink (every 2.8s for 0.14s) & Talk Viseme
+      const isBlinking = (t % 2.8) > 2.66;
+      eyesOpen.style.display = isBlinking ? 'none' : 'block';
+      eyesBlink.style.display = isBlinking ? 'block' : 'none';
+
+      const talkOpen = t > 1.0 && t < 7.2 ? 4 + Math.abs(Math.sin(t * 14)) * 9 : 4;
+      mouthEl.setAttribute('ry', talkOpen.toFixed(1));
+    }
+
+    const tl = gsap.timeline({
+      paused: isClean,
+      repeat: isClean ? 0 : -1,
+      onUpdate: () => {
+        updateLivingStage(tl.time());
+        applyStageCam();
+      }
+    });
+
+    // Camera Cut 1: Medium Stage Shot (zoom 1.22 -> 1.32 following character walk)
+    tl.to(cam, { x: 40, y: -30, z: 1.32, duration: 3.5, ease: 'sine.inOut' }, 0);
+    // Camera Cut 2: Medium Close-up on Character + Stall (zoom 1.62)
+    tl.set(cam, { x: -160, y: 75, z: 1.62 }, 3.5);
+    tl.to(cam, { x: -190, y: 65, z: 1.68, duration: 4.5, ease: 'sine.inOut' }, 3.5);
+
+    window.OPENER = {
+      W, H, DURATION, FPS, tl, ready: true,
+      clipsReady: () => Promise.resolve(true),
+      seek(t) {
+        tl.pause();
+        const clamped = Math.max(0, Math.min(DURATION, t));
+        tl.time(clamped);
+        updateLivingStage(clamped);
+        applyStageCam();
+      },
+      async seekFrame(t) {
+        this.seek(t);
+        await new Promise((r) => requestAnimationFrame(r));
+      },
+      play() { tl.play(0); }
+    };
+    updateLivingStage(0);
+    applyStageCam();
+  </script>
+</body>
+
+</html>

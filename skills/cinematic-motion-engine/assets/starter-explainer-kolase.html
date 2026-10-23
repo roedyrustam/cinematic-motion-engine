@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Motion Pro v2.0 — Kartun Kolase &amp; Jurnalisme Visual Starter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,800;1,9..144,700&family=JetBrains+Mono:wght@700&family=Plus+Jakarta+Sans:wght@700;800&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    :root {
+      --paper-cream: #F2ECE1;
+      --ink-black: #141413;
+      --crimson-tape: #D92B2B;
+      --marker-yellow: #FFDF38;
+      --cobalt-stamp: #1B4DFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #0D0D0C;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    #stage {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      background: var(--paper-cream);
+      overflow: hidden;
+      transform-origin: 50% 50%;
+    }
+
+    #world {
+      position: absolute;
+      inset: -1400px;
+      width: 4720px;
+      height: 3880px;
+      transform-origin: 50% 50%;
+    }
+
+    /* Surface Layer 1: Archival Dot Grid */
+    #archival-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(20, 20, 19, 0.16) 1.5px, transparent 1.5px);
+      background-size: 36px 36px;
+    }
+
+    #dom {
+      position: absolute;
+      left: 1400px;
+      top: 1400px;
+      width: 1920px;
+      height: 1080px;
+    }
+
+    /* Tactile Paper Cutout Card with White Rim & Hard Shadow */
+    .paper-cutout {
+      position: absolute;
+      background: #FFFFFF;
+      border: 6px solid #FFFFFF;
+      outline: 2px solid var(--ink-black);
+      box-shadow: 14px 16px 0 rgba(20, 20, 19, 0.9);
+      padding: 36px 44px;
+      transform-origin: 50% 50%;
+    }
+
+    .headline-serif {
+      font-family: 'Fraunces', serif;
+      font-size: 112px;
+      font-weight: 800;
+      line-height: 0.95;
+      color: var(--ink-black);
+    }
+
+    .dossier-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 34px;
+      font-weight: 700;
+      background: var(--ink-black);
+      color: var(--paper-cream);
+      padding: 6px 16px;
+      display: inline-block;
+      margin-bottom: 18px;
+    }
+
+    .body-journal {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: var(--ink-black);
+      margin-top: 20px;
+      position: relative;
+      display: inline-block;
+    }
+
+    .marker-sweep {
+      position: absolute;
+      inset: 4px -8px 0 -8px;
+      background: var(--marker-yellow);
+      mix-blend-mode: multiply;
+      transform-origin: 0% 50%;
+      transform: scaleX(0);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="stage">
+    <div id="world">
+      <div id="archival-grid"></div>
+      <div id="dom">
+        <!-- Red Investigation Yarn Connecting Clues -->
+        <svg width="4000" height="2400" style="position:absolute;left:0;top:0;pointer-events:none;overflow:visible">
+          <path id="red-yarn" d="M 860 520 Q 1580 280 2360 640" fill="none" stroke="#D92B2B" stroke-width="8"
+            stroke-dasharray="1800" stroke-dashoffset="1800" />
+        </svg>
+
+        <!-- Clue 1 Cutout at (860, 520) -->
+        <div id="cutout-1" class="paper-cutout"
+          style="left: 180px; top: 210px; width: 1320px; transform: rotate(-2.2deg);">
+          <span class="dossier-label">DOKUMEN ARSIP #01</span>
+          <h1 class="headline-serif">JEJAK ANGGARAN</h1>
+          <div>
+            <span class="body-journal">
+              Rp 4,8 Triliun bergeser dalam 72 jam
+              <span id="sweep-1" class="marker-sweep"></span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Clue 2 Cutout at (2360, 640) -->
+        <div id="cutout-2" class="paper-cutout"
+          style="left: 1780px; top: 340px; width: 1280px; transform: rotate(2.4deg);">
+          <span class="dossier-label" style="background:var(--crimson-tape)">TEMUAN AUDIT #02</span>
+          <h2 class="headline-serif" style="color:var(--cobalt-stamp)">340 KONTRAK</h2>
+          <div>
+            <span class="body-journal">
+              Ditandatangani pada menit yang sama.
+              <span id="sweep-2" class="marker-sweep"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const W = 1920, H = 1080, DURATION = 7.5, FPS = 60;
+    const isClean = new URLSearchParams(window.location.search).get('clean') === '1';
+
+    const stageEl = document.getElementById('stage');
+    function fitStage() {
+      const s = Math.min(window.innerWidth / W, window.innerHeight / H);
+      stageEl.style.transform = `scale(${s})`;
+    }
+    window.addEventListener('resize', fitStage);
+    fitStage();
+
+    const worldEl = document.getElementById('world');
+    const cam = { x: 0, y: 0, z: 1, rot: 0 };
+    function applyCam() {
+      worldEl.style.transform = `translate3d(${cam.x.toFixed(1)}px, ${cam.y.toFixed(1)}px, 0) scale(${cam.z.toFixed(3)}) rotate(${cam.rot.toFixed(2)}deg)`;
+    }
+    function calcShot(wx, wy, z = 1) {
+      return { x: -(wx - W / 2) * z, y: -(wy - H / 2) * z, z };
+    }
+
+    const tl = gsap.timeline({ paused: isClean, repeat: isClean ? 0 : -1, onUpdate: applyCam });
+
+    // Clue 1 Stop-Motion Pop + Marker Highlighter
+    tl.fromTo('#cutout-1', { scale: 0.65, rotation: -12, autoAlpha: 0 }, { scale: 1, rotation: -2.2, autoAlpha: 1, duration: 0.35, ease: 'steps(5)' }, 0.1);
+    tl.to('#sweep-1', { scaleX: 1, duration: 0.4, ease: 'power3.out' }, 0.65);
+
+    // Draw Red Investigation Yarn + Pan Camera to Clue 2
+    const shot2 = calcShot(2420, 620, 1.08);
+    tl.to('#red-yarn', { strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut' }, 2.8);
+    tl.to(cam, { x: shot2.x, y: shot2.y, z: shot2.z, rot: -1.8, duration: 0.65, ease: 'expo.inOut' }, 2.85);
+
+    tl.fromTo('#cutout-2', { scale: 0.7, rotation: 14, autoAlpha: 0 }, { scale: 1, rotation: 2.4, autoAlpha: 1, duration: 0.35, ease: 'steps(5)' }, 3.35);
+    tl.to('#sweep-2', { scaleX: 1, duration: 0.4, ease: 'power3.out' }, 3.9);
+
+    // Wide Overview Pullback showing both connected clues
+    const wideShot = calcShot(1640, 580, 0.72);
+    tl.to(cam, { x: wideShot.x, y: wideShot.y, z: wideShot.z, rot: 0, duration: 0.75, ease: 'power3.inOut' }, 6.1);
+
+    window.OPENER = {
+      W, H, DURATION, FPS, tl, ready: true,
+      clipsReady: () => Promise.resolve(true),
+      seek(t) {
+        tl.pause();
+        tl.time(Math.max(0, Math.min(DURATION, t)));
+        applyCam();
+      },
+      async seekFrame(t) {
+        this.seek(t);
+        await new Promise((r) => requestAnimationFrame(r));
+      },
+      play() { tl.play(0); }
+    };
+  </script>
+</body>
+
+</html>
