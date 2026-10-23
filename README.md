@@ -1,4 +1,4 @@
-# 🎬 Cinematic Motion Engine (Bang Motion Pro v2.1)
+# 🎬 Cinematic Motion Engine
 
 > **Standalone Broadcast Programmatic Motion Graphics, Kinetic Typography, Living Cartoon Stage & 60fps Video Engine for AI Agents**
 > *(Antigravity · Claude Code · Cursor · OpenAI Codex · Gemini CLI)*
