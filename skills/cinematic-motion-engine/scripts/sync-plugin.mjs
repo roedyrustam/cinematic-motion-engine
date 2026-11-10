@@ -5,10 +5,9 @@
  * Ensures 100% SHA-256 byte parity between the repository root (`SKILL.md`, `assets/`,
  * `references/`, `scripts/`) and:
  *   1. `skills/cinematic-motion-engine/` (in-repo plugin skill mirror)
- *   2. Global Antigravity & Vibes-Plug installations when `--global` is passed:
+ *   2. Global standalone plugin installation when `--global` is passed:
  *      - `~/.gemini/config/plugins/cinematic-motion-engine`
- *      - `~/.gemini/config/skills/cinematic-motion-engine`
- *      - `~/.gemini/config/plugins/vibes-plug/skills/cinematic-motion-engine`
+ *      - `~/.gemini/config/plugins/cinematic-motion-engine/skills/cinematic-motion-engine`
  *
  * Usage:
  *   node scripts/sync-plugin.mjs [--check] [--global]
@@ -83,12 +82,10 @@ function main() {
   let globalSynced = 0;
   let globalDrift = 0;
 
-  // 2. Global plugin & skill directories sync
+  // 2. Global standalone plugin directory sync
   if (syncGlobal) {
     const home = os.homedir();
     const globalPluginDir = path.join(home, '.gemini', 'config', 'plugins', 'cinematic-motion-engine');
-    const globalStandaloneSkillDir = path.join(home, '.gemini', 'config', 'skills', 'cinematic-motion-engine');
-    const vibesPlugSkillDir = path.join(home, '.gemini', 'config', 'plugins', 'vibes-plug', 'skills', 'cinematic-motion-engine');
 
     const rootTargets = [...SYNC_TARGETS, 'rules', 'README.md', 'package.json', 'plugin.json', 'PRD.md', 'BLUEPRINT.md', 'docs'];
 
@@ -103,18 +100,6 @@ function main() {
       );
       globalSynced += r1.syncedCount + r2.syncedCount;
       globalDrift += r1.driftCount + r2.driftCount;
-    }
-
-    if (fs.existsSync(globalStandaloneSkillDir)) {
-      const r3 = syncDirectoryTree(ROOT_DIR, globalStandaloneSkillDir, rootTargets, 'global-standalone-skill', checkOnly);
-      globalSynced += r3.syncedCount;
-      globalDrift += r3.driftCount;
-    }
-
-    if (fs.existsSync(vibesPlugSkillDir)) {
-      const r4 = syncDirectoryTree(ROOT_DIR, vibesPlugSkillDir, SYNC_TARGETS, 'vibes-plug-skill', checkOnly);
-      globalSynced += r4.syncedCount;
-      globalDrift += r4.driftCount;
     }
   }
 

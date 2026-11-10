@@ -1,6 +1,6 @@
 {
   "name": "cinematic-motion-engine",
-  "version": "2.2.0",
-  "description": "Standalone Broadcast Programmatic Motion Graphics, Kinetic Typography & 60fps Video Engine (Bang Motion Pro v2.2)",
+  "version": "3.0.0",
+  "description": "Modular Broadcast Programmatic Motion Graphics Studio Suite, Kinetic Typography, WebGPU Shaders, Living Cartoon Stage, Whisper AI Lip-Sync, Procedural Foley & 60fps GPU-Accelerated Video Engine",
   "author": "Roedy Rustam"
 }

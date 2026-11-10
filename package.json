@@ -1,7 +1,7 @@
 {
   "name": "cinematic-motion-engine",
-  "version": "2.2.0",
-  "description": "Standalone Broadcast Programmatic Motion Graphics, Kinetic Typography, Living Cartoon Stage & 60fps Video Engine for AI Agents (Antigravity, Claude Code, Cursor, Codex)",
+  "version": "3.0.0",
+  "description": "Modular Broadcast Programmatic Motion Graphics Studio Suite, Kinetic Typography, WebGPU Shaders, Living Cartoon Stage, Whisper AI Lip-Sync, Procedural Foley & 60fps GPU-Accelerated Video Engine for AI Agents (Antigravity, Claude Code, Cursor, Codex, Windsurf)",
   "type": "module",
   "author": "Roedy Rustam",
   "license": "MIT",
@@ -17,9 +17,13 @@
     "motion-graphics",
     "programmatic-video",
     "kinetic-typography",
+    "whisper-ai-sync",
+    "procedural-foley",
+    "sound-design",
     "gsap",
     "threejs",
     "webgpu",
+    "wgsl-shaders",
     "svg-animation",
     "cartoon-rigging",
     "explainer-video",
@@ -31,7 +35,8 @@
     "cursor-rules",
     "broadcast-animation",
     "audio-reactive",
-    "fft-visualizer"
+    "fft-visualizer",
+    "nvenc-render"
   ],
   "engines": {
     "node": ">=18.0.0"
@@ -42,12 +47,15 @@
     "export": "node scripts/export-video.mjs",
     "audio": "node scripts/generate-audio.mjs",
     "analyze": "node scripts/analyze-audio.mjs",
+    "foley": "node scripts/generate-foley.mjs",
+    "whisper": "node scripts/sync-whisper.mjs",
     "audit": "node scripts/audit-anti-ppt.mjs assets --strict",
     "gallery": "node scripts/generate-gallery.mjs",
     "sync": "node scripts/sync-plugin.mjs",
-    "sync:global": "node scripts/sync-plugin.mjs --global"
+    "sync:global": "node scripts/sync-plugin.mjs --global",
+    "test": "node scripts/audit-anti-ppt.mjs assets --strict && node scripts/sync-plugin.mjs --check"
   },
   "optionalDependencies": {
-    "puppeteer-core": "^24.0.0"
+    "puppeteer-core": "^24.43.1"
   }
 }

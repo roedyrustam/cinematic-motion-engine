@@ -1,21 +1,23 @@
 #!/usr/bin/env node
 /**
- * Cinematic Motion Engine v2.1 — Dedicated Multi-Browser 60fps Video Exporter & Multi-Codec FFmpeg Encoder
+ * Cinematic Motion Engine v3.0 — Dedicated Multi-Browser 60fps Video Exporter & GPU-Accelerated FFmpeg Encoder
+ * Author: Roedy Rustam
  *
  * Features:
- *   - Frame-accurate `await window.OPENER.seekFrame(t)` synchronization (supports <video> clips & WebGL)
+ *   - Frame-accurate `await window.OPENER.seekFrame(t)` synchronization (supports <video> clips & WebGL/WebGPU)
  *   - Zero-Disk FFmpeg `image2pipe` streaming mode (`--pipe`) or parallel multi-worker chunk capture
- *   - Multi-Aspect Ratio (`--ratio=16x9|9x16|1x1`)
+ *   - Hardware GPU acceleration auto-detection: NVIDIA NVENC (`h264_nvenc`) & Apple VideoToolbox (`h264_videotoolbox`)
+ *   - Multi-Aspect Ratio (`--ratio=16x9|9x16|1x1|4x5`)
  *   - Multi-Codec Broadcast Output (`--codec=h264|prores|webm-alpha`)
  *
  * Usage:
- *   node scripts/export-video.mjs <index.html> <output.mp4|mov|webm> [--fps=60] [--workers=4] [--audio=audio.wav] [--ratio=16x9] [--codec=h264] [--pipe]
+ *   node scripts/export-video.mjs <index.html> <output.mp4|mov|webm> [--fps=60] [--workers=4] [--audio=audio.wav] [--ratio=16x9|9x16|1x1|4x5] [--codec=h264|prores|webm-alpha] [--gpu=auto|nvenc|videotoolbox|cpu] [--pipe]
  */
 import fs from 'node:fs/promises';
 import fsSync from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { spawn } from 'node:child_process';
+import { spawn, execSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
 function findLocalChrome() {
@@ -36,6 +38,7 @@ async function launchBrowser() {
   const args = [
     '--allow-file-access-from-files',
     '--enable-webgl',
+    '--enable-unsafe-webgpu',
     '--ignore-gpu-blocklist',
     '--disable-background-timer-throttling',
     '--disable-backgrounding-occluded-windows',
@@ -54,26 +57,62 @@ async function launchBrowser() {
   }
 }
 
-function buildCodecArgs(codec, outputFile) {
+function detectGpuEncoder(requestedGpu = 'auto') {
+  if (requestedGpu === 'cpu') return 'cpu';
+  try {
+    const encoders = execSync('ffmpeg -encoders', { stdio: ['pipe', 'pipe', 'ignore'], encoding: 'utf8' });
+    if ((requestedGpu === 'nvenc' || requestedGpu === 'auto') && encoders.includes('h264_nvenc')) {
+      return 'nvenc';
+    }
+    if ((requestedGpu === 'videotoolbox' || requestedGpu === 'auto') && encoders.includes('h264_videotoolbox')) {
+      return 'videotoolbox';
+    }
+  } catch {
+    // FFmpeg query failed or not in PATH
+  }
+  return 'cpu';
+}
+
+function buildCodecArgs(codec, outputFile, gpuMode = 'cpu') {
   if (codec === 'prores') {
     return ['-c:v', 'prores_ks', '-profile:v', '4444', '-pix_fmt', 'yuva444p10le', outputFile];
   }
   if (codec === 'webm-alpha') {
     return ['-c:v', 'libvpx-vp9', '-pix_fmt', 'yuva420p', '-b:v', '0', '-crf', '18', outputFile];
   }
+
+  // H.264 MP4 with hardware acceleration if available
+  if (gpuMode === 'nvenc') {
+    console.log('[CME v3.0] Using NVIDIA NVENC Hardware Accelerated Encoder (h264_nvenc)');
+    return [
+      '-c:v', 'h264_nvenc',
+      '-preset', 'p6',
+      '-tune', 'hq',
+      '-cq', '16',
+      '-pix_fmt', 'yuv420p',
+      '-movflags', '+faststart',
+      outputFile
+    ];
+  }
+  if (gpuMode === 'videotoolbox') {
+    console.log('[CME v3.0] Using Apple Silicon VideoToolbox Hardware Accelerated Encoder');
+    return [
+      '-c:v', 'h264_videotoolbox',
+      '-q:v', '72',
+      '-pix_fmt', 'yuv420p',
+      '-movflags', '+faststart',
+      outputFile
+    ];
+  }
+
+  // CPU fallback
   return [
-    '-c:v',
-    'libx264',
-    '-crf',
-    '12',
-    '-preset',
-    'slow',
-    '-tune',
-    'grain',
-    '-pix_fmt',
-    'yuv420p',
-    '-movflags',
-    '+faststart',
+    '-c:v', 'libx264',
+    '-crf', '12',
+    '-preset', 'slow',
+    '-tune', 'grain',
+    '-pix_fmt', 'yuv420p',
+    '-movflags', '+faststart',
     outputFile
   ];
 }
@@ -93,7 +132,7 @@ async function main() {
   const args = process.argv.slice(2);
   if (args.length < 2) {
     console.log(
-      'Usage: node scripts/export-video.mjs <index.html> <output.mp4> [--fps=60] [--workers=4] [--audio=audio.wav] [--ratio=16x9|9x16|1x1] [--codec=h264|prores|webm-alpha] [--pipe]'
+      'Usage: node scripts/export-video.mjs <index.html> <output.mp4> [--fps=60] [--workers=4] [--audio=audio.wav] [--ratio=16x9|9x16|1x1|4x5] [--codec=h264|prores|webm-alpha] [--gpu=auto|nvenc|videotoolbox|cpu] [--pipe]'
     );
     process.exit(1);
   }
@@ -105,6 +144,7 @@ async function main() {
   const audioArg = args.find((a) => a.startsWith('--audio='));
   const ratioArg = args.find((a) => a.startsWith('--ratio='));
   const codecArg = args.find((a) => a.startsWith('--codec='));
+  const gpuArg = args.find((a) => a.startsWith('--gpu='));
   const usePipe = args.includes('--pipe');
 
   const fps = fpsArg ? parseInt(fpsArg.split('=')[1], 10) : 60;
@@ -112,6 +152,8 @@ async function main() {
   const audioFile = audioArg ? path.resolve(audioArg.split('=')[1]) : null;
   const ratio = ratioArg ? ratioArg.split('=')[1] : '16x9';
   const codec = codecArg ? codecArg.split('=')[1].toLowerCase() : 'h264';
+  const requestedGpu = gpuArg ? gpuArg.split('=')[1].toLowerCase() : 'auto';
+  const gpuMode = detectGpuEncoder(requestedGpu);
   const needsAlpha = codec === 'prores' || codec === 'webm-alpha';
 
   const fileUrl = `${pathToFileURL(htmlPath).href}?clean=1&ratio=${encodeURIComponent(ratio)}`;
@@ -133,7 +175,7 @@ async function main() {
 
   const totalFrames = Math.ceil(meta.DURATION * fps);
   console.log(
-    `[EXPORT] Rendering ${totalFrames} frames (${meta.W}x${meta.H} @ ${fps}fps, ratio=${ratio}, codec=${codec}) ${
+    `[CME v3.0 EXPORT] Rendering ${totalFrames} frames (${meta.W}x${meta.H} @ ${fps}fps, ratio=${ratio}, codec=${codec}, gpu=${gpuMode}) ${
       usePipe ? 'via Zero-Disk FFmpeg stdin pipe' : `across ${workers} dedicated browser workers`
     }...`
   );
@@ -145,7 +187,7 @@ async function main() {
     if (audioFile) {
       ffmpegArgs.push('-i', audioFile, '-c:a', 'aac', '-b:a', '192k', '-shortest');
     }
-    ffmpegArgs.push(...buildCodecArgs(codec, outputVideo));
+    ffmpegArgs.push(...buildCodecArgs(codec, outputVideo, gpuMode));
 
     const ffmpegProc = spawn('ffmpeg', ffmpegArgs, { stdio: ['pipe', 'inherit', 'inherit'] });
     const browser = await launchBrowser();
@@ -179,7 +221,7 @@ async function main() {
       await new Promise((resolve, reject) => {
         ffmpegProc.on('close', (code) => (code === 0 ? resolve() : reject(new Error(`FFmpeg exited ${code}`))));
       });
-      console.log(`[DONE] Saved broadcast video -> ${outputVideo}`);
+      console.log(`[CME v3.0 DONE] Saved broadcast video -> ${outputVideo}`);
     } finally {
       await browser.close();
     }
@@ -232,16 +274,16 @@ async function main() {
     }
 
     await Promise.all(workerPromises);
-    console.log(`[EXPORT] Frame capture complete. Encoding ${codec.toUpperCase()} with FFmpeg...`);
+    console.log(`[CME v3.0 EXPORT] Frame capture complete. Encoding ${codec.toUpperCase()} with FFmpeg (${gpuMode})...`);
 
     const ffmpegArgs = ['-y', '-framerate', String(fps), '-i', path.join(tmpFramesDir, `frame_%06d.${ext}`)];
     if (audioFile) {
       ffmpegArgs.push('-i', audioFile, '-c:a', 'aac', '-b:a', '192k', '-shortest');
     }
-    ffmpegArgs.push(...buildCodecArgs(codec, outputVideo));
+    ffmpegArgs.push(...buildCodecArgs(codec, outputVideo, gpuMode));
 
     await runFfmpeg(ffmpegArgs);
-    console.log(`[DONE] Saved broadcast video -> ${outputVideo}`);
+    console.log(`[CME v3.0 DONE] Saved broadcast video -> ${outputVideo}`);
   } finally {
     await fs.rm(tmpFramesDir, { recursive: true, force: true });
   }

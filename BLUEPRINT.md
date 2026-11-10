@@ -1,83 +1,79 @@
-# Cinematic Motion Engine v2.1 — Architecture Blueprint & Decision Log (BLUEPRINT.md)
+# Cinematic Motion Engine v3.0 — Architecture Blueprint & Decision Log (BLUEPRINT.md)
 
-## 1. Understanding Summary
-- **Core Goal**: Upgrade **Cinematic Motion Engine** across all 4 architectural pillars (Autonomous Audio/VO CLI, Anti-PPT DOM Telemetry Gate, Multi-Codec/Ratio 60fps Exporter, and Full 6-Mode Starter Arsenal + Plugin Sync).
-- **Target Audience**: AI Coding Agents (Antigravity, Claude Code, Cursor, Codex) and motion engineers producing broadcast 60fps openers, narrative explainers, and 2D cartoon stages.
+> **Author**: Roedy Rustam  
+> **Status**: Accepted & Implemented (v3.0.0 Modular Architecture)
 
 ---
 
-## 2. System Topology & Pipeline Flow
+## 1. System Topology & 6-Skill Modular Flow
 
 ```mermaid
-flowchart LR
-    subgraph Audio["1. Audio & VO Pipeline"]
-        GA["generate-audio.mjs\n(Mood Presets + WAV)"]
-        AA["analyze-audio.mjs\n(FFmpeg/WAV -> SEG/PARA/FFT)"]
+flowchart TD
+    subgraph Master["Master Orchestrator (cinematic-motion-engine)"]
+        SC["scaffold-video.mjs\n(24 Concepts & 12 Styles)"]
+        PR["Anti-PPT 8 Laws Governance"]
     end
 
-    subgraph Starters["2. Spatial #world Starters"]
-        S1["starter-opener.html"]
-        S2["starter-explainer.html"]
-        S3["starter-explainer-panggung.html"]
-        S4["starter-explainer-kolase.html"]
-        S5["starter-explainer-katalog.html (NEW)"]
-        S6["starter-explainer-sketsa.html (NEW)"]
+    subgraph AudioSuite["Audio & SFX (cme-audio-reactive-foley)"]
+        GA["generate-audio.mjs\n(Procedural Soundtracks)"]
+        AA["analyze-audio.mjs\n(60fps FFT Quantizer)"]
+        GF["generate-foley.mjs\n(Whooshes, Slams, Clicks)"]
     end
 
-    subgraph Audit["3. Anti-PPT Telemetry Gate"]
-        SC["snap-contact-sheet.mjs\n(12 Keyframes + DOM Linter)"]
-        AU["audit-anti-ppt.mjs\n(8 Mechanical Laws JSON)"]
+    subgraph VisualSuite["Motion & Animation Engines"]
+        TYP["cme-kinetic-typography\n(Accretion + Whisper Karaoke)"]
+        CAM["cme-camera-rigs-3d\n(#world Canvas + WebGPU Shaders)"]
+        PUP["cme-cartoon-puppet-rig\n(SVG Joint Rig J + Visemes)"]
     end
 
-    subgraph Export["4. Parallel 60fps Renderer"]
-        EX["export-video.mjs\n(seekFrame + H.264 / ProRes / WebM)"]
+    subgraph RenderGate["Audit & Export (cme-broadcast-renderer)"]
+        AUD["audit-anti-ppt.mjs\n(DOM Static/Runtime Linter)"]
+        SNP["snap-contact-sheet.mjs\n(12-Beat Contact Sheet)"]
+        EXP["export-video.mjs\n(NVENC / VideoToolbox GPU 60fps)"]
     end
 
-    GA --> Starters
-    AA --> Starters
-    Starters --> SC
-    Starters --> AU
-    SC --> EX
+    Master --> AudioSuite
+    Master --> VisualSuite
+    VisualSuite --> RenderGate
+    AudioSuite --> RenderGate
 ```
 
 ---
 
-## 3. Architectural Decision Records (MADR Standard)
+## 2. Architectural Decision Records (MADR Standard)
 
 | # | Decision Title | Status | Context & Problem | Chosen Solution & Rationale | Consequences & Trade-offs |
 | :- | :--- | :--- | :--- | :--- | :--- |
-| **1** | **Dual-Engine Audio Analyzer (`analyze-audio.mjs`)** | Accepted | `vo-fft-analyzer.html` requires manual browser drag-and-drop, blocking autonomous CLI agents. | Build `scripts/analyze-audio.mjs` using native Node PCM parser for `.wav` + automatic `ffmpeg -f f32le` pipe for `.mp3/.m4a/.ogg`. | Zero npm audio-decoder dependencies; works on any machine with Node or FFmpeg. |
-| **2** | **In-Page Anti-PPT Telemetry Injection** | Accepted | Visual screenshots alone can miss `26px` micro-text or lingering SVG blur filters. | Inject an evaluation payload inside `snap-contact-sheet.mjs` and `audit-anti-ppt.mjs` that queries `getComputedStyle` & `getBoundingClientRect` at every beat. | Catches 100% of mechanical violations automatically and prints telemetry badges on `contact-sheet.png`. |
-| **3** | **Async `seekFrame(t)` + Multi-Codec Export** | Accepted | `window.OPENER.seek(t)` is synchronous and may capture before `<video>` seeks or `requestAnimationFrame` flushes. | Standardize on `await window.OPENER.seekFrame(t)` in `export-video.mjs` and add `--codec=h264|prores|webm-alpha` + `--ratio=16x9|9x16|1x1`. | Guarantees frame-accurate `<video>` plates and enables transparent alpha overlays for NLE editors. |
-| **4** | **Deterministic Plugin Mirror (`sync-plugin.mjs`)** | Accepted | Maintaining duplicate files in root and `skills/cinematic-motion-engine/` causes version drift. | Create `scripts/sync-plugin.mjs` with SHA-256 verification and wire it to `npm run sync`. | Single source of truth at repository root; instant one-command synchronization. |
+| **1** | **Modular 6-Skill Ecosystem Decomposition** | Accepted | Single monolithic skill file was bloated (~43KB), making it hard for AI agents to load specific sub-domain context (e.g., character rigging vs typography). | Decompose into 6 focused skills under `skills/` sharing a common core runtime `assets/cme-core.js`. | Reduced context token usage per sub-task; cleaner separation of concerns. |
+| **2** | **Whisper AI Word-Level Sync (`sync-whisper.mjs`)** | Accepted | Audio FFT energy extraction alone could not provide word-level semantics for kinetic typography and lip-sync. | Ingest Whisper word timestamp JSON/SRT to generate millisecond-accurate word entrance arrays and viseme sequences. | Enables high-fidelity broadcast karaoke highlighting and automatic character lip-sync. |
+| **3** | **Procedural Foley Generator (`generate-foley.mjs`)** | Accepted | High-end motion graphics require tactile SFX (whip-pan whooshes, text slams), but external audio libraries introduce heavy dependencies. | Pure Node.js 16-bit PCM waveform generator with mathematical synthesis (swept sines, colored noise, low-pass filters). | Zero npm dependencies; 100% deterministic audio generation running anywhere. |
+| **4** | **GPU Hardware-Accelerated Video Rendering** | Accepted | CPU software encoding (`libx264`) at 60fps 1080p is slow for long timelines or high worker counts. | Implement auto-detection for `h264_nvenc` and `h264_videotoolbox` in `export-video.mjs` with software fallback. | Up to 5x faster export times on machines with dedicated GPUs. |
+| **5** | **Spring Dynamics RK4 Integration in `cme-core.js`** | Accepted | Standard bezier easing occasionally feels mechanical for elastic bounces or organic secondary motion. | Implement an analytical/numerical RK4 spring solver parameterized by mass, stiffness, and damping. | Provides natural physical motion while preserving 100% frame determinism against timeline time $t$. |
 
 ---
 
-## 4. Pre-Mortem Risk Assessment & Mitigation
-1. **Risk: FFmpeg not installed when running `analyze-audio.mjs` on `.wav` files.**
-   - *Mitigation*: Implement a built-in pure Node.js 16-bit/32-bit RIFF WAV decoder directly inside `analyze-audio.mjs` so `.wav` files (including those from `generate-audio.mjs`) work even without FFmpeg installed; use FFmpeg automatically for compressed formats (`.mp3`, `.m4a`, `.ogg`).
-2. **Risk: False-positive safe-zone warnings during mid-whip-pan frames.**
-   - *Mitigation*: Only enforce strict safe-zone and `filter: none` checks when the camera is in a settled beat window (i.e. when `#mb-world-node` `stdDeviation` is `0 0`).
-3. **Risk: Head expression generator drawing eyes/mouth off-center on cropped vs padded PNGs.**
-   - *Mitigation*: Compute the alpha channel bounding box (`alpha > 16`) in `kepala-ekspresi.py` so facial landmarks are anchored relative to the actual visible head silhouette rather than empty transparent canvas padding.
+## 3. Subagent & Module Contract Specifications (v3.0)
 
----
-
-## 5. Subagent & Module Contract Slice
-- **`window.OPENER` Contract v2.1**:
-  ```ts
-  interface OpenerContract {
-    W: number;               // 1920 (16:9) | 1080 (9:16 or 1:1)
-    H: number;               // 1080 (16:9 or 1:1) | 1920 (9:16)
-    DURATION: number;        // Total timeline duration in seconds
-    FPS: number;             // 60
-    RATIO: '16x9' | '9x16' | '1x1';
-    BEATS?: number[];        // Optional canonical beat timestamps for snapping & audio drops
-    tl: GSAPTimeline;
-    ready: boolean;
-    clipsReady(): Promise<boolean>;
-    seek(t: number): void;
-    seekFrame(t: number): Promise<void>;
-    play(): void;
-  }
-  ```
+### `window.OPENER` Automation Contract v3.0
+```ts
+interface OpenerContractV3 {
+  W: number;                   // Stage width (1920, 1080, etc.)
+  H: number;                   // Stage height (1080, 1920, 1350, etc.)
+  DURATION: number;            // Total duration in seconds
+  FPS: number;                 // 60
+  RATIO: '16x9' | '9x16' | '1x1' | '4x5';
+  BEATS?: number[];            // Canonical beat timestamps
+  WORDS?: Array<{              // Optional Whisper word timestamps
+    word: string;
+    start: number;
+    end: number;
+    phoneme?: string;
+  }>;
+  tl: GSAPTimeline;
+  ready: boolean;
+  clipsReady(): Promise<boolean>;
+  seek(t: number): void;
+  seekFrame(t: number): Promise<void>;
+  play(): void;
+}
+```

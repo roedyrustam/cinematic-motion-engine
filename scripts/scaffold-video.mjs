@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 /**
- * Cinematic Motion Engine v2.2 — Autonomous One-Command Video Project Scaffolder
+ * Cinematic Motion Engine v3.0 — Autonomous One-Command Video Project Scaffolder
+ * Author: Roedy Rustam
  *
  * Scaffolds a complete broadcast motion graphics project directory from one of the 6 official starters,
  * copies `cme-core.js`, synthesizes a deterministic WAV soundtrack + 60fps `AUDIO_FRAMES` curve,
+ * generates procedural foley SFX, optionally generates Whisper word-level timing,
  * and runs the Anti-PPT mechanical linter automatically.
  *
  * Usage:
@@ -12,10 +14,13 @@
  * Options:
  *   --mode=<opener|explainer|panggung|kolase|katalog|sketsa> (default: opener)
  *   --style=<swiss-grid|kartun-kolase|jurnalisme-visual|katalog-putih|sketsa-vintage|kartun-panggung|bauhaus-geo|brutalist-telemetry|editorial-film|isometric-blueprint|spatial-optics|data-sculpture>
+ *   --ratio=<16x9|9x16|1x1|4x5> (default: 16x9)
  *   --title="<Project Title>"
  *   --duration=<seconds> (default: 10)
  *   --bpm=<number>       (default: 125)
  *   --mood=<warm|cyber|editorial|corporate> (default: warm)
+ *   --foley              (generate procedural foley sound effects track)
+ *   --whisper            (generate demo Whisper word-level karaoke array)
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -39,10 +44,13 @@ function parseArgs(argv) {
     targetDir: null,
     mode: 'opener',
     style: null,
-    title: 'Cinematic Motion Engine Production',
+    ratio: '16x9',
+    title: 'Cinematic Motion Engine v3.0 Production',
     duration: 10,
     bpm: 125,
-    mood: 'warm'
+    mood: 'warm',
+    foley: false,
+    whisper: false
   };
   for (const arg of argv) {
     if (!arg.startsWith('--') && !opts.targetDir) opts.targetDir = arg;
@@ -50,10 +58,13 @@ function parseArgs(argv) {
     else if (arg.startsWith('--mode=')) opts.mode = arg.slice(7).toLowerCase();
     else if (arg.startsWith('--type=')) opts.mode = arg.slice(7).toLowerCase();
     else if (arg.startsWith('--style=')) opts.style = arg.slice(8).toLowerCase();
+    else if (arg.startsWith('--ratio=')) opts.ratio = arg.slice(8).toLowerCase();
     else if (arg.startsWith('--title=')) opts.title = arg.slice(8);
     else if (arg.startsWith('--duration=')) opts.duration = parseFloat(arg.slice(11)) || 10;
     else if (arg.startsWith('--bpm=')) opts.bpm = parseFloat(arg.slice(6)) || 125;
     else if (arg.startsWith('--mood=')) opts.mood = arg.slice(7).toLowerCase();
+    else if (arg === '--foley') opts.foley = true;
+    else if (arg === '--whisper') opts.whisper = true;
   }
   return opts;
 }
@@ -62,7 +73,7 @@ function main() {
   const opts = parseArgs(process.argv.slice(2));
   if (!opts.targetDir) {
     console.log(
-      'Usage: node scripts/scaffold-video.mjs <target-dir> [--mode=opener|explainer|panggung|kolase|katalog|sketsa] [--style=swiss-grid] [--duration=10] [--bpm=125] [--mood=warm]'
+      'Usage: node scripts/scaffold-video.mjs <target-dir> [--mode=opener|explainer|panggung|kolase|katalog|sketsa] [--style=swiss-grid] [--ratio=16x9|9x16|1x1|4x5] [--duration=10] [--bpm=125] [--mood=warm] [--foley] [--whisper]'
     );
     process.exit(1);
   }
@@ -96,13 +107,29 @@ function main() {
     { stdio: 'inherit' }
   );
 
-  // 3. Customize starter HTML and inject <script src="./audio-frames.js"> & <script src="./cme-core.js">
+  // 3. Optional Foley generation
+  if (opts.foley) {
+    const foleyPath = path.join(outDir, 'foley-whoosh.wav');
+    spawnSync(process.execPath, [path.join(ROOT_DIR, 'scripts', 'generate-foley.mjs'), '--type=whoosh', `--out=${foleyPath}`]);
+    const slamPath = path.join(outDir, 'foley-slam.wav');
+    spawnSync(process.execPath, [path.join(ROOT_DIR, 'scripts', 'generate-foley.mjs'), '--type=impact', `--out=${slamPath}`]);
+  }
+
+  // 4. Optional Whisper demo generation
+  if (opts.whisper) {
+    const whisperJsPath = path.join(outDir, 'whisper-words.js');
+    spawnSync(process.execPath, [path.join(ROOT_DIR, 'scripts', 'sync-whisper.mjs'), '--demo', `--out=${whisperJsPath}`]);
+  }
+
+  // 5. Customize starter HTML and inject scripts
   let html = fs.readFileSync(starterPath, 'utf8');
   html = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${opts.title}</title>`);
-  html = html.replace(
-    '</head>',
-    `  <script src="./audio-frames.js"></script>\n  <script src="./cme-core.js"></script>\n</head>`
-  );
+
+  let injectedScripts = `  <script src="./audio-frames.js"></script>\n  <script src="./cme-core.js"></script>`;
+  if (opts.whisper) {
+    injectedScripts += `\n  <script src="./whisper-words.js"></script>`;
+  }
+  html = html.replace('</head>', `${injectedScripts}\n</head>`);
 
   if (opts.style) {
     html = html.replace(
@@ -114,14 +141,15 @@ function main() {
   const indexHtmlPath = path.join(outDir, 'index.html');
   fs.writeFileSync(indexHtmlPath, html, 'utf8');
 
-  // 4. Run Anti-PPT static audit on scaffolded project
+  // 6. Run Anti-PPT static audit on scaffolded project
   spawnSync(process.execPath, [path.join(ROOT_DIR, 'scripts', 'audit-anti-ppt.mjs'), indexHtmlPath, '--strict'], {
     stdio: 'inherit'
   });
 
-  console.log(`\n[SCAFFOLD COMPLETE] Project ready at: ${outDir}`);
+  console.log(`\n[CME v3.0 SCAFFOLD COMPLETE] Project ready at: ${outDir}`);
+  console.log(`  Ratio: ${opts.ratio} | Mode: ${opts.mode} | Style: ${opts.style || 'default'}`);
   console.log(`  1. Visual Audit : node "${path.join(ROOT_DIR, 'scripts', 'snap-contact-sheet.mjs')}" "${indexHtmlPath}" "${path.join(outDir, 'snaps')}"`);
-  console.log(`  2. 60fps Export : node "${path.join(ROOT_DIR, 'scripts', 'export-video.mjs')}" "${indexHtmlPath}" "${path.join(outDir, 'output.mp4')}" --audio="${wavPath}"`);
+  console.log(`  2. 60fps Export : node "${path.join(ROOT_DIR, 'scripts', 'export-video.mjs')}" "${indexHtmlPath}" "${path.join(outDir, 'output.mp4')}" --audio="${wavPath}" --ratio=${opts.ratio} --gpu=auto`);
 }
 
 main();
